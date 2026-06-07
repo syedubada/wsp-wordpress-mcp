@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WebSensePro MCP Abilities
  * Description: Exposes WordPress content to Claude AI via MCP with full read/write control. Manage all abilities from Settings > WSP MCP.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: WebSensePro
  * Author URI: https://websensepro.com
  */

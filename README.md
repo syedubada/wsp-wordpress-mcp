@@ -1,195 +1,82 @@
-# WSP WordPress MCP — Connect AI Coding Agents to WordPress
+# WSP WordPress MCP — Connect AI Agents to WordPress
 
-> **WordPress MCP server by [WebSensePro](https://websensepro.com) — Official Shopify Partner & WordPress Development Agency**
+> **By [WebSensePro](https://websensepro.com) — Official Shopify Partner & WordPress Agency**
 
-[![WordPress MCP](https://img.shields.io/badge/WordPress-MCP%20Server-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://github.com/bilalnaseer/wsp-wordpress-mcp)
-[![WebSensePro](https://img.shields.io/badge/Built%20by-WebSensePro-FF6B35?style=for-the-badge)](https://websensepro.com)
-[![YouTube](https://img.shields.io/badge/YouTube-140K%2B%20Subscribers-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://m.youtube.com/websensepro)
-[![Version](https://img.shields.io/badge/Version-1.1.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
+[![YouTube](https://img.shields.io/badge/YouTube-140K%2B%20Subscribers-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/websensepro)
+[![License](https://img.shields.io/badge/License-GPL%202.0-green?style=for-the-badge)](LICENSE)
 
 ---
 
-## 🤖 What is WordPress MCP?
+## 🎬 Watch the Tutorial
 
-**WordPress MCP** (Model Context Protocol) is a standardized bridge that connects AI coding agents — like **Claude**, **Cursor**, **GitHub Copilot**, and **ChatGPT** — directly to your WordPress site. This allows AI assistants to read, manage, and manipulate your WordPress content, settings, and data through natural language commands.
-
-The **WSP WordPress MCP** server is built and maintained by [WebSensePro](https://websensepro.com). We've packaged our real-world WordPress development experience into this open-source WordPress MCP integration.
+[![WSP WordPress MCP — Full Tutorial](https://img.youtube.com/vi/nHE6PcA5pfc/maxresdefault.jpg)](https://youtu.be/nHE6PcA5pfc)
 
 ---
 
-## ✨ Features
+## ✨ What's New in v1.2.0
 
-- 🔌 **Plug-and-play WordPress MCP server** — connects your WordPress site to any MCP-compatible AI agent
-- 📝 **Content Management** — create, update, and publish posts/pages via AI commands
-- ⚙️ **Site Administration** — manage settings, plugins, and themes through natural language
-- 🛡️ **Secure by Design** — authentication and permission controls built in
-- 🔄 **REST API Bridge** — translates MCP tool calls into WordPress REST API requests
-- 🤝 **Multi-Agent Support** — works with Claude Desktop and Codex adding more MCP Clients as soon as possible
-- 🗂️ **Built-in Config Generator** — wp-admin Config Files page auto-generates ready-to-paste configs for Claude Desktop and Codex
-- 🔒 **Granular Ability Controls** — enable/disable each read or write ability individually from wp-admin
-- 🚀 **Agency-Grade** — built by developers who run WordPress at scale for clients worldwide
+- ⚡ **Elementor Abilities** — list pages, get page structure, find/get/update elements, add widgets & containers, remove elements
+- 🗂️ **Modular Plugin Architecture** — refactored into `includes/` with separate files per feature group
+- 🔧 **Auto Config Generator** — generates ready-to-paste configs for Claude Desktop & Codex from wp-admin
+- 🔒 **Granular Ability Controls** — enable/disable each ability individually; Elementor group only shown when Elementor is active
+- 📦 **WP.org Ready** — proper headers, license, `uninstall.php`, and PHP 7.2+ support
 
 ---
 
-## 🧠 Why Use a WordPress MCP Server?
+## 🛠️ Available Abilities
 
-Traditional WordPress development requires manually switching between your IDE, wp-admin, and your AI assistant. With a **WordPress MCP server**, your AI coding agent can:
+### Core WordPress
+| Ability | Access |
+|---------|--------|
+| Read / Create / Update / Delete Posts | read / write |
+| Read / Create / Update / Delete Pages | read / write |
+| Read Categories & Tags / Create | read / write |
+| Read / Approve / Delete Comments | read / write |
+| Read Media Library | read |
+| Read Users | read |
+| Search Content | read |
+| Read Site Info & Active Plugins | read |
 
-- Query and update posts, pages, and custom post types directly
-- Install or configure plugins and themes via conversation
-- Pull site health data, user info, and environment details on demand
-- Automate repetitive content workflows without leaving your editor
-- Enable true AI-assisted WordPress development end-to-end
-
-The Model Context Protocol (MCP) was designed specifically to standardize how AI agents connect to external systems — and WordPress MCP makes your site a first-class citizen in that ecosystem.
-
----
-
-## 🎬 Video Demo
-
-[![WSP WordPress MCP — Video Demo](https://img.youtube.com/vi/nHE6PcA5pfc/maxresdefault.jpg)](https://youtu.be/nHE6PcA5pfc)
+### Elementor *(requires Elementor plugin)*
+| Ability | Access |
+|---------|--------|
+| List Elementor Pages | read |
+| Get Page Structure (element tree) | read |
+| Get Element Settings | read |
+| Find Element by type or content | read |
+| List Templates | read |
+| Update Element settings | write |
+| Add Widget to page | write |
+| Add Container / Section | write |
+| Remove Element | write |
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+**Prerequisites:** WordPress 6.9+, [WordPress MCP Adapter](https://github.com/WordPress/mcp-adapter), Node.js 18+
 
-- WordPress site (self-hosted, v6.0+)
-- **[WordPress MCP Adapter](https://github.com/WordPress/mcp-adapter)** — must be installed first 
-- Node.js 18+ (for the MCP client/proxy)
-- An MCP-compatible AI client (Claude Desktop, Cursor, etc.)
-
-### Installation
-
-**Step 1: Install and Activate the WordPress Plugin**
-
-**Step 2: Enable the MCP Server**
-
-Navigate to **MCP > Settings** in wp-admin and choose the abilities.
-
-**Step 3: Configure Your AI Client**
-
-Add the following to your MCP client configuration (e.g., `claude_desktop_config.json` for Claude Desktop):
-
-```json
-{
-    "mcpServers": {
-        "wsp-wordpress-mcp": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@automattic/mcp-wordpress-remote@latest"
-            ],
-            "env": {
-                "WP_API_URL": "https://yourwebsite.com/wp-json/mcp/mcp-adapter-default-server",
-                "WP_API_USERNAME": "your-wp-user-name",
-                "WP_API_PASSWORD": "replace-with-your-application-password"
-            }
-        }
-    }
-}
-```
-
-**Step 4: Start Prompting**
-
-Open your AI assistant and start issuing WordPress commands in plain English:
-
-> *"Show me all draft posts from the last 7 days"*
-> *"Publish the post titled 'Summer Sale' and set the featured image"*
-> *"List all active plugins and their versions"*
-
----
-
-## 🛠️ Available MCP Tools
-
-The WSP WordPress MCP server exposes the following tools to connected AI agents:
-
-### Content Tools
-| Tool | Description |
-|------|-------------|
-| `get_posts` | Retrieve posts with filters (status, category, date) |
-| `create_post` | Create a new post or page |
-| `update_post` | Update post content, status, or metadata |
-| `delete_post` | Move a post to trash |
-| `get_media` | List media library items |
-
-### Administration Tools
-| Tool | Description |
-|------|-------------|
-| `get_site_info` | Retrieve site name, URL, WordPress version |
-| `get_plugins` | List installed and active plugins |
-| `get_users` | Retrieve user list with roles |
-| `get_options` | Read WordPress site options |
-
----
-
-## 🤝 Compatible AI Agents
-
-This **WordPress MCP** server has been tested with:
-
-| AI Agent | Status |
-|----------|--------|
-| Claude (Anthropic) — Desktop & Code | ✅ Fully Supported |
+1. Install & activate this plugin
+2. Go to **MCP > Settings** in wp-admin and enable the abilities you need
+3. Go to **MCP > Config Files** and copy your auto-generated config
+4. Paste it into `claude_desktop_config.json` (or `~/.codex/config.toml` for Codex)
+5. Start prompting your AI agent
 
 ---
 
 ## 🏢 About WebSensePro
 
-**WSP WordPress MCP** is built and maintained by [WebSensePro](https://websensepro.com) — a digital agency specializing in WordPress development, Shopify stores, and AI-powered automation.
+Built by [WebSensePro](https://websensepro.com) — WordPress & Shopify agency from Queens, NY.
 
-- 🏆 **Official Shopify Partner** — [shopify.com/partners/websensepro1](https://www.shopify.com/partners/directory/partner/websensepro1)
-- 🎥 **140K+ YouTube Subscribers** — [youtube.com/websensepro](https://m.youtube.com/websensepro)
-- 🤖 **Official n8n Creator** — [n8n.io/creators/websensepro](https://n8n.io/creators/websensepro/)
-
-We build WordPress solutions for SMBs across the US and globally, from Queens, NY to Karachi.
-
----
-
-## 💬 Support & Contact
-
-Need help setting up your WordPress MCP server? Reach out:
-
-| Channel | Link |
-|---------|------|
-| 🌐 Website | [websensepro.com](https://websensepro.com) |
-| 📧 Email | [info@websensepro.com](mailto:info@websensepro.com) |
-| 🎥 YouTube | [m.youtube.com/websensepro](https://m.youtube.com/websensepro) 
-
----
-
-## 🤲 Contributing
-
-Contributions are welcome! If you find a bug or want to add a new MCP tool:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-mcp-tool`)
-3. Commit your changes (`git commit -m 'Add: new MCP tool for XYZ'`)
-4. Push to the branch (`git push origin feature/new-mcp-tool`)
-5. Open a Pull Request
-
-Please follow WordPress coding standards and include tool descriptions compatible with the MCP specification.
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🔑 Keywords
-
-`wordpress mcp` · `wordpress mcp server` · `model context protocol wordpress` · `ai wordpress integration` · `wordpress ai agent` · `claude wordpress` · `cursor wordpress` · `wordpress automation` · `wp mcp` · `websensepro`
+- 🏆 [Official Shopify Partner](https://www.shopify.com/partners/directory/partner/websensepro1)
+- 🎥 [140K+ YouTube Subscribers](https://m.youtube.com/websensepro)
+- 🤖 [Official n8n Creator](https://n8n.io/creators/websensepro/)
+- 📧 [info@websensepro.com](mailto:info@websensepro.com)
 
 ---
 
 <div align="center">
-
-**Built with ❤️ by [WebSensePro](https://websensepro.com) **
-
-*Official Shopify Partner · WordPress Development · AI Automation*
 
 [⭐ Star this repo](https://github.com/bilalnaseer/wsp-wordpress-mcp) · [🍴 Fork it](https://github.com/bilalnaseer/wsp-wordpress-mcp/fork) · [🐛 Report a bug](https://github.com/bilalnaseer/wsp-wordpress-mcp/issues)
 

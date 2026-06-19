@@ -40,7 +40,6 @@ function wsp_mcp_ability_registry() {
             'wsp/yoast-update-seo' => array( 'label' => 'Update Yoast SEO Meta', 'description' => 'Update Yoast SEO title, meta description, and/or focus keyphrase for a post or page.', 'group' => 'Yoast SEO', 'access' => 'write', 'default' => false ),
         );
     }
-
     if ( class_exists( '\Elementor\Plugin' ) ) {
         $abilities += array(
             // ELEMENTOR

@@ -73,9 +73,18 @@ function wsp_mcp_settings_page() {
         .wsp-stat-l{font-size:11px;color:#787c82;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
         .wsp-stat--on .wsp-stat-n{color:#00a32a}
         .wsp-stat--wr .wsp-stat-n{color:#d63638}
-        .wsp-group{background:#fff;border:1px solid #dcdcde;border-radius:8px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-        .wsp-gh{background:#f6f7f7;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dcdcde}
+        .wsp-group{background:#fff;border:1px solid #dcdcde;border-radius:8px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+        .wsp-gh{background:#f6f7f7;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;cursor:pointer;user-select:none;transition:background .12s}
+        .wsp-gh:hover{background:#f0f1f2}
+        .wsp-group.wsp-open .wsp-gh{border-bottom-color:#dcdcde}
         .wsp-gt{font-weight:700;font-size:13.5px;color:#1d2327;margin:0;display:flex;align-items:center;gap:8px}
+        .wsp-chev{display:inline-block;color:#787c82;font-size:11px;transition:transform .2s;width:10px}
+        .wsp-group.wsp-open .wsp-chev{transform:rotate(90deg)}
+        .wsp-gh-right{display:flex;align-items:center;gap:14px}
+        .wsp-gcount{font-size:11px;font-weight:700;color:#646970;background:#e8eaec;border-radius:20px;padding:2px 10px;letter-spacing:.3px}
+        .wsp-gcount.wsp-gcount--on{background:#e3f4e6;color:#00802b}
+        .wsp-gbody{display:none}
+        .wsp-group.wsp-open .wsp-gbody{display:block}
         .wsp-toggle-all{font-size:12px;color:#0073aa;cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;font-weight:600}
         .wsp-row{display:grid;grid-template-columns:1fr 50px;align-items:center;padding:13px 20px;border-bottom:1px solid #f0f0f1;gap:12px;transition:background .12s}
         .wsp-row:last-child{border-bottom:none}
@@ -115,12 +124,24 @@ function wsp_mcp_settings_page() {
         <form method="post" action="options.php">
             <?php settings_fields( 'wsp_mcp_settings_group' ); ?>
 
-            <?php foreach ( $groups as $gname => $abilities ) : ?>
-            <div class="wsp-group">
+            <?php foreach ( $groups as $gname => $abilities ) :
+                $g_total = count( $abilities );
+                $g_on    = 0;
+                foreach ( $abilities as $k => $c ) {
+                    if ( ! empty( $settings[ $k ] ) ) {
+                        $g_on++;
+                    }
+                }
+                ?>
+            <div class="wsp-group" data-group="<?php echo esc_attr( $gname ); ?>">
                 <div class="wsp-gh">
-                    <h3 class="wsp-gt"><?php echo isset( $icons[ $gname ] ) ? esc_html( $icons[ $gname ] ) . ' ' : ''; ?><?php echo esc_html( $gname ); ?></h3>
-                    <button type="button" class="wsp-toggle-all" data-group="<?php echo esc_attr( $gname ); ?>">Toggle All</button>
+                    <h3 class="wsp-gt"><span class="wsp-chev">&#9654;</span><?php echo isset( $icons[ $gname ] ) ? esc_html( $icons[ $gname ] ) . ' ' : ''; ?><?php echo esc_html( $gname ); ?></h3>
+                    <div class="wsp-gh-right">
+                        <span class="wsp-gcount<?php echo $g_on > 0 ? ' wsp-gcount--on' : ''; ?>" data-group="<?php echo esc_attr( $gname ); ?>" data-total="<?php echo esc_attr( $g_total ); ?>"><?php echo esc_html( $g_on . ' / ' . $g_total ); ?></span>
+                        <button type="button" class="wsp-toggle-all" data-group="<?php echo esc_attr( $gname ); ?>">Toggle All</button>
+                    </div>
                 </div>
+                <div class="wsp-gbody">
                 <?php foreach ( $abilities as $key => $cfg ) : ?>
                 <div class="wsp-row">
                     <div>
@@ -141,6 +162,7 @@ function wsp_mcp_settings_page() {
                     </label>
                 </div>
                 <?php endforeach; ?>
+                </div>
             </div>
             <?php endforeach; ?>
 
@@ -153,19 +175,70 @@ function wsp_mcp_settings_page() {
 
     <script>
     document.addEventListener('DOMContentLoaded', function(){
-        document.querySelectorAll('input[data-access="write"]').forEach(function(cb){
-            cb.addEventListener('change', function(){
-                if(this.checked && !confirm('⚠️ This ability can MODIFY live site content.\n\nAre you sure you want to enable it?')){
-                    this.checked = false;
+        var STORE = 'wsp_acc_open';
+
+        function readOpen(){
+            try { return JSON.parse(localStorage.getItem(STORE)) || []; }
+            catch(e){ return []; }
+        }
+        function writeOpen(list){
+            try { localStorage.setItem(STORE, JSON.stringify(list)); } catch(e){}
+        }
+
+        // Restore open/closed state (default: all collapsed).
+        var open = readOpen();
+        document.querySelectorAll('.wsp-group').forEach(function(grp){
+            if (open.indexOf(grp.dataset.group) !== -1) {
+                grp.classList.add('wsp-open');
+            }
+        });
+
+        // Accordion toggle on header click (ignore clicks on the Toggle All button).
+        document.querySelectorAll('.wsp-gh').forEach(function(head){
+            head.addEventListener('click', function(e){
+                if (e.target.closest('.wsp-toggle-all')) return;
+                var grp = head.closest('.wsp-group');
+                grp.classList.toggle('wsp-open');
+                var list = readOpen();
+                var name = grp.dataset.group;
+                var i = list.indexOf(name);
+                if (grp.classList.contains('wsp-open')) {
+                    if (i === -1) list.push(name);
+                } else if (i !== -1) {
+                    list.splice(i, 1);
                 }
+                writeOpen(list);
             });
         });
+
+        // Keep a group's header count badge in sync with its toggles.
+        function refreshCount(g){
+            var badge = document.querySelector('.wsp-gcount[data-group="'+g+'"]');
+            if (!badge) return;
+            var boxes = document.querySelectorAll('input[data-group="'+g+'"]');
+            var on = Array.from(boxes).filter(function(b){ return b.checked; }).length;
+            badge.textContent = on + ' / ' + badge.dataset.total;
+            badge.classList.toggle('wsp-gcount--on', on > 0);
+        }
+
+        // Write-ability confirmation + count refresh.
+        document.querySelectorAll('input[type="checkbox"][data-group]').forEach(function(cb){
+            cb.addEventListener('change', function(){
+                if (this.dataset.access === 'write' && this.checked &&
+                    !confirm('⚠️ This ability can MODIFY live site content.\n\nAre you sure you want to enable it?')) {
+                    this.checked = false;
+                }
+                refreshCount(this.dataset.group);
+            });
+        });
+
         document.querySelectorAll('.wsp-toggle-all').forEach(function(btn){
             btn.addEventListener('click', function(){
                 var g = this.dataset.group;
                 var boxes = document.querySelectorAll('input[data-group="'+g+'"]');
                 var allOn = Array.from(boxes).every(function(b){ return b.checked; });
                 boxes.forEach(function(b){ b.checked = !allOn; });
+                refreshCount(g);
             });
         });
     });

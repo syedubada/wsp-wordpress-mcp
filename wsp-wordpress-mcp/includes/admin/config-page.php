@@ -76,6 +76,15 @@ function wsp_mcp_config_page() {
         <div class="wsp-header">
             <h1>⚙️ Connection Config</h1>
         </div>
+        <div class="notice notice-warning inline" style="margin:0 0 18px;padding:12px 16px;">
+            <p style="margin:0;font-size:13.5px;">
+                <strong>Legacy method.</strong> These snippets use the external
+                <code>@automattic/mcp-wordpress-remote</code> bridge and the WordPress MCP Adapter route.
+                For a direct, single-plugin connection (no adapter, no extra package), use the
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wsp-mcp-connection' ) ); ?>"><strong>MCP &rsaquo; Connection</strong></a>
+                page instead — it serves MCP natively and includes ready-made snippets for Claude, Cursor, Codex, Antigravity and OpenClaw.
+            </p>
+        </div>
         <p class="wsp-desc">
             Connect your AI tool to this WordPress site. Your API URL and username are auto-detected —
             just generate an <strong>Application Password</strong> and paste it in.

@@ -2,7 +2,7 @@
 
 > **By [WebSensePro](https://websensepro.com) — Official Shopify Partner & WordPress Agency**
 
-[![Version](https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
+[![Version](https://img.shields.io/badge/Version-2.2.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
 [![YouTube](https://img.shields.io/badge/YouTube-140K%2B%20Subscribers-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/websensepro)
 [![License](https://img.shields.io/badge/License-GPL%202.0-green?style=for-the-badge)](LICENSE)
 
@@ -14,15 +14,22 @@
 
 ---
 
-## ✨ What's New in v2.0.0
+## ✨ What's New in v2.2.0
 
-- 🚀 **Built-in Native MCP Server** — the plugin now ships its own MCP server at `/wp-json/wsp-mcp/v1/mcp`. **No companion plugin, WordPress MCP Adapter, or Node.js bridge required.**
+- 🧹 **Native-Only** — the legacy dual-mode Abilities-API / MCP-Adapter registration path and the **MCP > Config Files** page have been removed. The built-in native server is now the single transport.
+- 🔁 **Seamless Redirects** — old bookmarks to the Config Files page now redirect to **MCP > Connection**.
+- ⚠️ **Breaking** — connections made before v2.0 through the WordPress MCP Adapter must be re-created using the native endpoint on **MCP > Connection**. New installs and native connections are unaffected.
+
+## Previous Releases
+
+**v2.1.0** — 🛒 **WooCommerce Suite** — 15 new tools covering products (list, get, create, create variation, update), orders (list, update status, refund), coupons (create, list), order notes, customers, sales reports, low-stock alerts, and review moderation. All off by default and only registered when WooCommerce is active; financial/PII tools require the `manage_woocommerce` capability.
+
+**v2.0.0**
+- 🚀 **Built-in Native MCP Server** — the plugin ships its own MCP server at `/wp-json/wsp-mcp/v1/mcp`. **No companion plugin, WordPress MCP Adapter, or Node.js bridge required.**
 - 🔌 **MCP > Connection Page** — endpoint URL, API key (with one-click regenerate), and ready-to-paste config tabs for **Claude Desktop, Cursor, Codex, Antigravity, and OpenClaw** — the API key is pre-filled for you.
 - 🔐 **Flexible Auth** — connect with a WordPress Application Password **or** the plugin's API key (`Authorization: Bearer`), with per-tool capability enforcement.
 - 🗂️ **Cleaner Settings** — ability groups are now collapsible accordions with live enabled/total counts.
-- ♻️ **Dual-Mode** — existing Abilities-API / MCP-Adapter connections keep working untouched.
 
-## Previous Releases
 
 **v1.3.0** — 🔍 Yoast SEO abilities (read/update SEO title, meta description, focus keyphrase); group only appears when Yoast is active.
 
@@ -70,6 +77,21 @@
 | Add Container / Section | write |
 | Remove Element | write |
 
+### WooCommerce *(requires WooCommerce plugin)*
+| Ability | Access |
+|---------|--------|
+| List / Get Products | read |
+| Create Product / Create Variation | write |
+| Update Product | write |
+| List Orders / Update Order Status | read / write |
+| Refund Order *(requires `manage_woocommerce`)* | write |
+| Create / List Coupons *(requires `manage_woocommerce`)* | write / read |
+| Create Order Note | write |
+| List Customers *(requires `manage_woocommerce`)* | read |
+| Sales Report | read |
+| Low-Stock Alerts | read |
+| Moderate Product Reviews | write |
+
 ---
 
 ## 🚀 Quick Start
@@ -82,7 +104,7 @@
 4. Copy the snippet — the endpoint URL and API key are already filled in — and paste it into your client's config
 5. Reconnect / restart the client and start prompting your AI agent
 
-> **Upgrading from v1.x?** Your existing MCP-Adapter connection keeps working in dual-mode. The legacy **MCP > Config Files** page is still available, but the native **MCP > Connection** page is now the recommended path.
+> **Upgrading from before v2.0?** As of v2.2 the legacy MCP-Adapter / Abilities-API path and the **MCP > Config Files** page have been removed. Re-create your connection using the native endpoint on **MCP > Connection**.
 
 ---
 

@@ -33,6 +33,7 @@ The plugin ships its **own native MCP server**. You do not need the WordPress MC
 * Search content
 * Read and update Yoast SEO meta (requires Yoast SEO)
 * Read and edit Elementor page structure (requires Elementor)
+* Manage WooCommerce products, variations, orders, refunds, coupons, customers, order notes, sales reports, low-stock alerts, and review moderation (requires WooCommerce)
 
 == Installation ==
 

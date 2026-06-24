@@ -9,7 +9,24 @@ function wsp_woo_sideload_image_by_url( $url, $post_id ) {
     require_once ABSPATH . 'wp-admin/includes/file.php';
     require_once ABSPATH . 'wp-admin/includes/media.php';
 
+    // Scoped SSL bypass only for this specific image download
+    $ssl_bypass = function( $args, $req_url ) use ( $url ) {
+        if ( $req_url === $url ) {
+            if ( function_exists( 'wp_get_environment_type' ) ) {
+                if ( in_array( wp_get_environment_type(), array( 'local', 'development' ), true ) ) {
+                    $args['sslverify'] = false;
+                }
+            }
+        }
+        return $args;
+    };
+    add_filter( 'http_request_args', $ssl_bypass, 10, 2 );
+
     $tmp = download_url( $url );
+
+    // Remove the filter immediately so it doesn't affect the rest of the site
+    remove_filter( 'http_request_args', $ssl_bypass, 10 );
+
     if ( is_wp_error( $tmp ) ) {
         return false;
     }
@@ -65,6 +82,7 @@ function wsp_register_woocommerce_abilities() {
 
     $base = array( 'category' => 'wsp', 'output_schema' => array( 'type' => 'object' ), 'meta' => array( 'mcp' => array( 'public' => true ) ) );
     $can_edit = function() { return current_user_can( 'edit_posts' ); };
+    $can_manage_woo = function() { return current_user_can( 'manage_woocommerce' ); }; // Added for sensitive Woo operations
 
     if ( wsp_mcp_is_enabled( 'wsp/woo-get-products' ) ) {
         wp_register_ability( 'wsp/woo-get-products', array_merge( $base, array(
@@ -153,7 +171,7 @@ function wsp_register_woocommerce_abilities() {
                 'discount_type' => array( 'type' => 'string' ),
                 'expiry_date'   => array( 'type' => 'string' ),
             ) ),
-            'permission_callback' => function() { return current_user_can( 'publish_posts' ); },
+            'permission_callback' => $can_manage_woo,
             'execute_callback'   => 'wsp_execute_woo_create_coupon',
         ) ) );
     }
@@ -164,7 +182,7 @@ function wsp_register_woocommerce_abilities() {
             'input_schema'       => array( 'type' => 'object', 'properties' => array(
                 'limit' => array( 'type' => 'integer' ),
             ) ),
-            'permission_callback' => $can_edit,
+            'permission_callback' => $can_manage_woo,
             'execute_callback'   => 'wsp_execute_woo_list_coupons',
         ) ) );
     }
@@ -188,7 +206,7 @@ function wsp_register_woocommerce_abilities() {
             'input_schema'       => array( 'type' => 'object', 'properties' => array(
                 'limit' => array( 'type' => 'integer' ),
             ) ),
-            'permission_callback' => $can_edit,
+            'permission_callback' => $can_manage_woo, // Fixed: PII access requires manage_woocommerce
             'execute_callback'   => 'wsp_execute_woo_list_customers',
         ) ) );
     }
@@ -199,7 +217,7 @@ function wsp_register_woocommerce_abilities() {
             'input_schema'       => array( 'type' => 'object', 'properties' => array(
                 'days' => array( 'type' => 'integer' ),
             ) ),
-            'permission_callback' => $can_edit,
+            'permission_callback' => $can_manage_woo,
             'execute_callback'   => 'wsp_execute_woo_report_sales',
         ) ) );
     }
@@ -227,8 +245,6 @@ function wsp_register_woocommerce_abilities() {
             'execute_callback'   => 'wsp_execute_woo_moderate_review',
         ) ) );
     }
-
-    
 
     if ( wsp_mcp_is_enabled( 'wsp/woo-list-orders' ) ) {
         wp_register_ability( 'wsp/woo-list-orders', array_merge( $base, array(
@@ -262,7 +278,7 @@ function wsp_register_woocommerce_abilities() {
                 'amount'   => array( 'type' => 'string' ),
                 'reason'   => array( 'type' => 'string' ),
             ) ),
-            'permission_callback' => $can_edit,
+            'permission_callback' => $can_manage_woo, // Fixed: Financial action requires manage_woocommerce
             'execute_callback'   => 'wsp_execute_woo_refund_order',
         ) ) );
     }
@@ -495,6 +511,12 @@ function wsp_execute_woo_create_coupon( $input ) {
     $amount = sanitize_text_field( wp_unslash( $input['amount'] ) );
     $type   = isset( $input['discount_type'] ) ? sanitize_text_field( wp_unslash( $input['discount_type'] ) ) : 'percent';
 
+    // Fixed: Added validation for discount_type
+    $allowed_types = array( 'percent', 'fixed_cart', 'fixed_product' );
+    if ( ! in_array( $type, $allowed_types, true ) ) {
+        return array( 'success' => false, 'error' => 'Invalid discount_type. Allowed values: percent, fixed_cart, fixed_product' );
+    }
+
     $coupon = new WC_Coupon();
     $coupon->set_code( $code );
     $coupon->set_amount( $amount );
@@ -664,6 +686,12 @@ function wsp_execute_woo_moderate_review( $input ) {
     $review_id = intval( $input['id'] );
     $action    = sanitize_text_field( wp_unslash( $input['action'] ) ); 
     
+    // Fixed: Added validation for action
+    $allowed_actions = array( 'approve', 'spam', 'trash', 'reply' );
+    if ( ! in_array( $action, $allowed_actions, true ) ) {
+        return array( 'success' => false, 'error' => 'Invalid action. Allowed values: approve, spam, trash, reply' );
+    }
+
     $review = get_comment( $review_id );
     if ( ! $review ) {
         return array( 'success' => false, 'error' => 'Review not found.' );
@@ -721,6 +749,12 @@ function wsp_execute_woo_update_order_status( $input ) {
     $id     = intval( $input['id'] );
     $status = sanitize_text_field( wp_unslash( $input['status'] ) );
 
+    // Fixed: Added validation for order status
+    $allowed = array( 'pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed' );
+    if ( ! in_array( str_replace('wc-', '', $status), $allowed, true ) ) {
+        return array( 'success' => false, 'error' => 'Invalid status. Allowed values: ' . implode(', ', $allowed) );
+    }
+
     $o = wc_get_order( $id );
     if ( ! $o ) return array( 'success' => false, 'error' => 'Order not found.' );
 
@@ -763,19 +797,4 @@ function wsp_execute_woo_refund_order( $input ) {
         'reason'    => $reason,
     );
 }
-
-
-add_filter( 'http_request_args', 'wsp_woo_bypass_local_ssl_verify', 10, 2 );
-function wsp_woo_bypass_local_ssl_verify( $args, $url ) {
-    if ( function_exists( 'wp_get_environment_type' ) ) {
-        $env = wp_get_environment_type();
-        if ( in_array( $env, array( 'local', 'development' ), true ) ) {
-            $args['sslverify'] = false;
-        }
-    } else {
-        $args['sslverify'] = false;
-    }
-    return $args;
-}
-
 ?>

@@ -356,7 +356,7 @@ function wsp_mcp_register_native_tools() {
 				'reason'   => array( 'type' => 'string', 'description' => 'Reason for refund.' ),
 			) ),
 			'callback'    => 'wsp_execute_woo_refund_order',
-			'capability'  => 'edit_posts',
+			'capability'  => 'manage_woocommerce',
 			'enable_key'  => 'wsp/woo-refund-order',
 		) );
 		WSP_MCP_Server::register_tool( 'wsp_woo_create_coupon', array(
@@ -368,7 +368,7 @@ function wsp_mcp_register_native_tools() {
 				'expiry_date'   => array( 'type' => 'string', 'description' => 'Expiry date format YYYY-MM-DD (optional).' ),
 			) ),
 			'callback'    => 'wsp_execute_woo_create_coupon',
-			'capability'  => 'publish_posts',
+			'capability' => 'manage_woocommerce',
 			'enable_key'  => 'wsp/woo-create-coupon',
 		) );
 		WSP_MCP_Server::register_tool( 'wsp_woo_list_coupons', array(
@@ -377,7 +377,7 @@ function wsp_mcp_register_native_tools() {
 				'limit' => array( 'type' => 'integer', 'description' => 'Number of coupons to fetch. Default 20.' ),
 			) ),
 			'callback'    => 'wsp_execute_woo_list_coupons',
-			'capability'  => 'edit_posts',
+			'capability' => 'manage_woocommerce',
 			'enable_key'  => 'wsp/woo-list-coupons',
 		) );
 		WSP_MCP_Server::register_tool( 'wsp_woo_create_order_note', array(
@@ -397,7 +397,7 @@ function wsp_mcp_register_native_tools() {
 				'limit' => array( 'type' => 'integer', 'description' => 'Number of customers to list. Default 10.' ),
 			) ),
 			'callback'    => 'wsp_execute_woo_list_customers',
-			'capability'  => 'edit_posts',
+			'capability'  => 'manage_woocommerce',
 			'enable_key'  => 'wsp/woo-list-customers',
 		) );
 		WSP_MCP_Server::register_tool( 'wsp_woo_report_sales', array(

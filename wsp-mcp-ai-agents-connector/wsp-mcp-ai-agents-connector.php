@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Easy AI Agents Connector
+ * Plugin Name: WSP MCP - AI Agents Connector
  * Description: Exposes WordPress content to Claude AI and other AI Agents via a built-in MCP server (no companion plugin required). Manage all abilities from Settings > MCP.
  * Version: 2.2.0
  * Requires at least: 6.2
@@ -9,6 +9,7 @@
  * Author URI: https://websensepro.com
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: wsp-mcp-ai-agents-connector
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

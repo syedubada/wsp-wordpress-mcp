@@ -1,10 +1,25 @@
-# Changelog — WebSensePro MCP Abilities
+# Changelog — WSP MCP - AI Agents Connector
 
 > **AI Agents:** Read `AGENTS.md` → `CHANGELOG.md` → `HISTORY.md` in that order before touching any source file.
 > After every code change you **must** update `AGENTS.md` (if architecture/tools/hooks changed) and add an entry here.
 
 All notable changes to this plugin are listed here. Ordered newest-first.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+---
+
+## [Unreleased]
+
+### Fixed (WordPress.org Plugin Check)
+- `includes/abilities/woocommerce.php` — replaced `parse_url()` with `wp_parse_url()` and `@unlink()` with `wp_delete_file()` (WordPress.WP.AlternativeFunctions).
+- `includes/admin/settings-page.php` — the legacy-config redirect now sanitizes the `page` GET param (`sanitize_key( wp_unslash() )`) with a justified `WordPress.Security.NonceVerification.Recommended` ignore (read-only navigation routing, no state change).
+- `includes/server/class-session-store.php` — moved the `WordPress.DB.PreparedSQL.InterpolatedNotPrepared` ignore onto the actual SQL-string lines (it was on the wrong line and not suppressing the warning), and build the table name inline from `$wpdb->prefix` in `touch_session()`, `get_fingerprint()`, and `cleanup_expired()` so the Plugin Check `DirectDB.UnescapedDBParameter` sniff can verify it as a safe source (it couldn't trace the previous `self::table()` helper). All values remain bound via `$wpdb->prepare()`.
+
+### Changed
+- **Plugin slug renamed** `websensepro-mcp-abilities` → `wsp-mcp-ai-agents-connector`. The plugin folder and main file were renamed (`wsp-mcp-ai-agents-connector/wsp-mcp-ai-agents-connector.php`), the text domain was updated across all 48 i18n calls in `includes/admin/connection-page.php`, and a matching `Text Domain: wsp-mcp-ai-agents-connector` header was added to the main file (it was previously missing). Done to align the slug with the public name ahead of WordPress.org submission.
+
+### Breaking changes
+- **The plugin folder name changed.** On existing installs WordPress treats the new folder as a separate plugin: after updating, deactivate/remove the old `websensepro-mcp-abilities` copy and activate the new one. Stored options, the sessions table, and the API key are untouched (constants/option keys are unchanged), so no reconfiguration is needed beyond reactivation.
 
 ---
 

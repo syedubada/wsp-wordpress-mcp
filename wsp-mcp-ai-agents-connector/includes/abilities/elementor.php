@@ -160,7 +160,9 @@ function wsp_execute_elementor_list_pages( $input ) {
         'post_type'      => $post_type,
         'post_status'    => $status,
         'posts_per_page' => $per_page,
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required to identify Elementor-built pages; result set is paginated.
         'meta_key'       => '_elementor_edit_mode',
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required to identify Elementor-built pages; result set is paginated.
         'meta_value'     => 'builder',
     ) );
 
@@ -223,6 +225,7 @@ function wsp_execute_elementor_list_templates( $input ) {
         'posts_per_page' => $per_page,
     );
     if ( ! empty( $input['type'] ) ) {
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required to filter Elementor templates by type; result set is paginated.
         $args['tax_query'] = array( array(
             'taxonomy' => 'elementor_library_type',
             'field'    => 'slug',

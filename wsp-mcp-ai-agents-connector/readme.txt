@@ -1,8 +1,8 @@
-=== WebSensePro MCP Abilities ===
+=== WSP MCP - AI Agents Connector ===
 Contributors: websensepro
 Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.2
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 2.2.0
 License: GPL-2.0-or-later
@@ -12,7 +12,7 @@ Expose your WordPress site to AI agents (Claude, Cursor, and other MCP clients) 
 
 == Description ==
 
-WebSensePro MCP Abilities turns your WordPress site into a Model Context Protocol (MCP) server. AI clients can read and edit posts, pages, categories, tags, media, comments, users, and (when installed) Yoast SEO meta and Elementor page content — all under granular, per-ability admin control.
+WSP MCP - AI Agents Connector turns your WordPress site into a Model Context Protocol (MCP) server. AI clients can read and edit posts, pages, categories, tags, media, comments, users, and (when installed) Yoast SEO meta and Elementor page content — all under granular, per-ability admin control.
 
 The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active.
 
@@ -57,6 +57,10 @@ Use a WordPress Application Password (sent via HTTP Basic auth) or the plugin-ge
 Any client that supports the Streamable HTTP MCP transport — Claude Desktop, MCP Inspector, IDEs, and scripts.
 
 == Changelog ==
+
+= Unreleased =
+* Changed: plugin slug renamed to `wsp-mcp-ai-agents-connector` (folder, main file, and text domain) to match the public name ahead of WordPress.org submission.
+* Breaking: the plugin folder name changed — on existing installs, remove the old copy and activate the renamed plugin. Saved settings, the sessions table, and the API key are preserved.
 
 = 2.2.0 =
 * Removed: the **MCP > Config Files** page and the legacy dual-mode Abilities-API / mcp-adapter registration path. The plugin is now native-only.

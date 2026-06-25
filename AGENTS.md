@@ -30,7 +30,7 @@ These three files give you complete project understanding without touching the c
 
 ## What this plugin is
 
-**Plugin Name:** WebSensePro MCP Abilities  
+**Plugin Name:** WSP MCP - AI Agents Connector  
 **Version:** 2.2.0  
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
@@ -104,8 +104,8 @@ must **reconnect** (fully restart Claude Desktop, not just open a new chat) befo
 
 ```
 wsp-wordpress-mcp/
-└── websensepro-mcp-abilities/          ← plugin root (the installable folder)
-    ├── websensepro-mcp-abilities.php   ← main file: constants, requires, hooks, activation/migration
+└── wsp-mcp-ai-agents-connector/          ← plugin root (the installable folder)
+    ├── wsp-mcp-ai-agents-connector.php   ← main file: constants, requires, hooks, activation/migration
     ├── readme.txt              ← WP.org readme (v2.0)
     ├── uninstall.php           ← deletes wsp_mcp_* options + drops sessions table
     └── includes/
@@ -125,7 +125,7 @@ wsp-wordpress-mcp/
             ├── users.php  search.php  site.php  yoast.php  elementor.php  woocommerce.php
 ```
 
-**Rule:** The main file is a minimal loader (+ activation/migration glue) only. All feature logic lives in `includes/`. Never put feature code in `websensepro-mcp-abilities.php`.
+**Rule:** The main file is a minimal loader (+ activation/migration glue) only. All feature logic lives in `includes/`. Never put feature code in `wsp-mcp-ai-agents-connector.php`.
 
 ---
 
@@ -416,7 +416,7 @@ architecture, hooks, tools, constants, or admin UX.**
 **Adding a feature / tool:** follow **"### How to add a NEW MCP tool (v2.0)"** above (logic →
 `native-tools.php` registration → `registry.php` metadata).
 Keep business logic in `includes/abilities/*.php`; keep transport wiring in `includes/server/` and
-`includes/tools/`. **Never** put feature code in `websensepro-mcp-abilities.php` (loader + activation glue only).
+`includes/tools/`. **Never** put feature code in `wsp-mcp-ai-agents-connector.php` (loader + activation glue only).
 
 **Conventions:**
 - Match the existing procedural style and `wsp_`/`wsp/`/`wsp_…` naming above.

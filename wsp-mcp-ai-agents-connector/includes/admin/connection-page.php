@@ -28,7 +28,7 @@ add_action( 'admin_menu', 'wsp_mcp_add_connection_menu', 20 );
 /** Handle API-key regeneration. */
 function wsp_mcp_handle_regenerate_key() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'Insufficient permissions.', 'websensepro-mcp-abilities' ) );
+		wp_die( esc_html__( 'Insufficient permissions.', 'wsp-mcp-ai-agents-connector' ) );
 	}
 	check_admin_referer( 'wsp_mcp_regenerate_key' );
 	WSP_MCP_Auth::regenerate_api_key();
@@ -144,34 +144,34 @@ function wsp_mcp_connection_page() {
 
 	<div class="wsp-wrap">
 		<div class="wsp-header">
-			<h1><?php esc_html_e( 'MCP Connection', 'websensepro-mcp-abilities' ); ?></h1>
+			<h1><?php esc_html_e( 'MCP Connection', 'wsp-mcp-ai-agents-connector' ); ?></h1>
 		</div>
 		<p class="wsp-desc">
-			<?php esc_html_e( 'Connect any MCP-capable AI client directly to this site. No companion plugin or WordPress MCP Adapter is required — this plugin serves MCP natively. The API key below is already embedded in each snippet.', 'websensepro-mcp-abilities' ); ?>
+			<?php esc_html_e( 'Connect any MCP-capable AI client directly to this site. No companion plugin or WordPress MCP Adapter is required — this plugin serves MCP natively. The API key below is already embedded in each snippet.', 'wsp-mcp-ai-agents-connector' ); ?>
 		</p>
 
 		<?php if ( isset( $_GET['wsp_key_regenerated'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-success is-dismissible"><p>
-				<?php esc_html_e( 'API key regenerated. Re-copy the snippet into each connected client.', 'websensepro-mcp-abilities' ); ?>
+				<?php esc_html_e( 'API key regenerated. Re-copy the snippet into each connected client.', 'wsp-mcp-ai-agents-connector' ); ?>
 			</p></div>
 		<?php endif; ?>
 
 		<div class="wsp-facts">
 			<table role="presentation">
 				<tr>
-					<th scope="row"><?php esc_html_e( 'Endpoint URL', 'websensepro-mcp-abilities' ); ?></th>
+					<th scope="row"><?php esc_html_e( 'Endpoint URL', 'wsp-mcp-ai-agents-connector' ); ?></th>
 					<td><code><?php echo esc_html( $endpoint ); ?></code></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php esc_html_e( 'API Key', 'websensepro-mcp-abilities' ); ?></th>
+					<th scope="row"><?php esc_html_e( 'API Key', 'wsp-mcp-ai-agents-connector' ); ?></th>
 					<td>
 						<code><?php echo esc_html( $api_key ); ?></code>
 						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline; margin-left:8px;">
 							<input type="hidden" name="action" value="wsp_mcp_regenerate_key" />
 							<?php wp_nonce_field( 'wsp_mcp_regenerate_key' ); ?>
 							<button type="submit" class="button button-secondary"
-								onclick="return confirm('<?php echo esc_js( __( 'Regenerate the API key? All connected clients will need the new snippet.', 'websensepro-mcp-abilities' ) ); ?>');">
-								<?php esc_html_e( 'Regenerate', 'websensepro-mcp-abilities' ); ?>
+								onclick="return confirm('<?php echo esc_js( __( 'Regenerate the API key? All connected clients will need the new snippet.', 'wsp-mcp-ai-agents-connector' ) ); ?>');">
+								<?php esc_html_e( 'Regenerate', 'wsp-mcp-ai-agents-connector' ); ?>
 							</button>
 						</form>
 					</td>
@@ -191,15 +191,15 @@ function wsp_mcp_connection_page() {
 		<div class="wsp-tab-panel wsp-tab-panel-active" id="wsp-tab-claude">
 			<div class="wsp-config-box">
 				<div class="wsp-instructions">
-					<p><span class="wsp-badge wsp-badge-node"><?php esc_html_e( 'Requires Node.js', 'websensepro-mcp-abilities' ); ?></span> <?php esc_html_e( 'Claude Desktop config files only support local (stdio) servers, so this uses the mcp-remote bridge to reach the HTTP endpoint.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>1. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <strong>Settings &gt; Developer &gt; Edit Config</strong>, <?php esc_html_e( 'or edit', 'websensepro-mcp-abilities' ); ?> <code>claude_desktop_config.json</code> <?php esc_html_e( 'directly.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'websensepro-mcp-abilities' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if you already have one).', 'websensepro-mcp-abilities' ); ?></p>
-					<p>3. <?php esc_html_e( 'Fully quit and reopen Claude Desktop so it re-reads the tool list.', 'websensepro-mcp-abilities' ); ?></p>
+					<p><span class="wsp-badge wsp-badge-node"><?php esc_html_e( 'Requires Node.js', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'Claude Desktop config files only support local (stdio) servers, so this uses the mcp-remote bridge to reach the HTTP endpoint.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <strong>Settings &gt; Developer &gt; Edit Config</strong>, <?php esc_html_e( 'or edit', 'wsp-mcp-ai-agents-connector' ); ?> <code>claude_desktop_config.json</code> <?php esc_html_e( 'directly.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'wsp-mcp-ai-agents-connector' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if you already have one).', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>3. <?php esc_html_e( 'Fully quit and reopen Claude Desktop so it re-reads the tool list.', 'wsp-mcp-ai-agents-connector' ); ?></p>
 				</div>
 				<div class="wsp-config-header">
 					<span class="wsp-config-title">claude_desktop_config.json</span>
 					<button type="button" class="wsp-copy-btn" id="wsp-copy-claude">
-						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'websensepro-mcp-abilities' ); ?>
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-claude"><?php echo esc_html( $claude_json ); ?></pre>
@@ -210,15 +210,15 @@ function wsp_mcp_connection_page() {
 		<div class="wsp-tab-panel" id="wsp-tab-cursor">
 			<div class="wsp-config-box">
 				<div class="wsp-instructions">
-					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'websensepro-mcp-abilities' ); ?></span> <?php esc_html_e( 'Cursor connects to the endpoint natively — no Node.js needed.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>1. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <code>~/.cursor/mcp.json</code> (<?php esc_html_e( 'global', 'websensepro-mcp-abilities' ); ?>) <?php esc_html_e( 'or', 'websensepro-mcp-abilities' ); ?> <code>.cursor/mcp.json</code> <?php esc_html_e( 'in your project root.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'websensepro-mcp-abilities' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if present).', 'websensepro-mcp-abilities' ); ?></p>
-					<p>3. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <strong>Settings &gt; MCP</strong> <?php esc_html_e( 'and confirm the server shows green.', 'websensepro-mcp-abilities' ); ?></p>
+					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'Cursor connects to the endpoint natively — no Node.js needed.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <code>~/.cursor/mcp.json</code> (<?php esc_html_e( 'global', 'wsp-mcp-ai-agents-connector' ); ?>) <?php esc_html_e( 'or', 'wsp-mcp-ai-agents-connector' ); ?> <code>.cursor/mcp.json</code> <?php esc_html_e( 'in your project root.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'wsp-mcp-ai-agents-connector' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if present).', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>3. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <strong>Settings &gt; MCP</strong> <?php esc_html_e( 'and confirm the server shows green.', 'wsp-mcp-ai-agents-connector' ); ?></p>
 				</div>
 				<div class="wsp-config-header">
 					<span class="wsp-config-title">~/.cursor/mcp.json</span>
 					<button type="button" class="wsp-copy-btn" id="wsp-copy-cursor">
-						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'websensepro-mcp-abilities' ); ?>
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-cursor"><?php echo esc_html( $cursor_json ); ?></pre>
@@ -229,15 +229,15 @@ function wsp_mcp_connection_page() {
 		<div class="wsp-tab-panel" id="wsp-tab-codex">
 			<div class="wsp-config-box">
 				<div class="wsp-instructions">
-					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'websensepro-mcp-abilities' ); ?></span> <?php esc_html_e( 'Codex reaches the streamable-HTTP endpoint natively via url + http_headers.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>1. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <code>~/.codex/config.toml</code>.</p>
-					<p>2. <?php esc_html_e( 'Append the block below.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>3. <?php esc_html_e( 'Restart Codex, then run', 'websensepro-mcp-abilities' ); ?> <code>/mcp</code> <?php esc_html_e( 'to verify the server is listed.', 'websensepro-mcp-abilities' ); ?></p>
+					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'Codex reaches the streamable-HTTP endpoint natively via url + http_headers.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <code>~/.codex/config.toml</code>.</p>
+					<p>2. <?php esc_html_e( 'Append the block below.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>3. <?php esc_html_e( 'Restart Codex, then run', 'wsp-mcp-ai-agents-connector' ); ?> <code>/mcp</code> <?php esc_html_e( 'to verify the server is listed.', 'wsp-mcp-ai-agents-connector' ); ?></p>
 				</div>
 				<div class="wsp-config-header">
 					<span class="wsp-config-title">~/.codex/config.toml</span>
 					<button type="button" class="wsp-copy-btn" id="wsp-copy-codex">
-						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'websensepro-mcp-abilities' ); ?>
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-codex"><?php echo esc_html( $codex_toml ); ?></pre>
@@ -248,15 +248,15 @@ function wsp_mcp_connection_page() {
 		<div class="wsp-tab-panel" id="wsp-tab-antigravity">
 			<div class="wsp-config-box">
 				<div class="wsp-instructions">
-					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'websensepro-mcp-abilities' ); ?></span> <?php esc_html_e( 'Antigravity uses serverUrl (not url) for remote HTTP servers.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>1. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <code>~/.gemini/config/mcp_config.json</code>, <?php esc_html_e( 'or use', 'websensepro-mcp-abilities' ); ?> <strong>Manage MCP Servers &gt; View raw config</strong>.</p>
-					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'websensepro-mcp-abilities' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if present).', 'websensepro-mcp-abilities' ); ?></p>
-					<p>3. <?php esc_html_e( 'Refresh the MCP server list in Antigravity.', 'websensepro-mcp-abilities' ); ?></p>
+					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'Antigravity uses serverUrl (not url) for remote HTTP servers.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <code>~/.gemini/config/mcp_config.json</code>, <?php esc_html_e( 'or use', 'wsp-mcp-ai-agents-connector' ); ?> <strong>Manage MCP Servers &gt; View raw config</strong>.</p>
+					<p>2. <?php esc_html_e( 'Paste the snippet below (merge into an existing', 'wsp-mcp-ai-agents-connector' ); ?> <code>mcpServers</code> <?php esc_html_e( 'block if present).', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>3. <?php esc_html_e( 'Refresh the MCP server list in Antigravity.', 'wsp-mcp-ai-agents-connector' ); ?></p>
 				</div>
 				<div class="wsp-config-header">
 					<span class="wsp-config-title">~/.gemini/config/mcp_config.json</span>
 					<button type="button" class="wsp-copy-btn" id="wsp-copy-antigravity">
-						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'websensepro-mcp-abilities' ); ?>
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-antigravity"><?php echo esc_html( $antigravity_json ); ?></pre>
@@ -267,15 +267,15 @@ function wsp_mcp_connection_page() {
 		<div class="wsp-tab-panel" id="wsp-tab-openclaw">
 			<div class="wsp-config-box">
 				<div class="wsp-instructions">
-					<p><span class="wsp-badge wsp-badge-node"><?php esc_html_e( 'Requires Node.js', 'websensepro-mcp-abilities' ); ?></span> <?php esc_html_e( 'OpenClaw uses the nested mcp.servers schema and reaches the endpoint via the mcp-remote bridge.', 'websensepro-mcp-abilities' ); ?></p>
-					<p>1. <?php esc_html_e( 'Open', 'websensepro-mcp-abilities' ); ?> <code>~/.openclaw/openclaw.json</code> <?php esc_html_e( 'and paste the block below on the line right after the top-level opening', 'websensepro-mcp-abilities' ); ?> <code>{</code>.</p>
-					<p>2. <?php esc_html_e( 'Save the file, then restart the gateway:', 'websensepro-mcp-abilities' ); ?> <code>openclaw gateway restart</code></p>
-					<p>3. <?php esc_html_e( 'Verify:', 'websensepro-mcp-abilities' ); ?> <code>openclaw mcp status --verbose</code></p>
+					<p><span class="wsp-badge wsp-badge-node"><?php esc_html_e( 'Requires Node.js', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'OpenClaw uses the nested mcp.servers schema and reaches the endpoint via the mcp-remote bridge.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Open', 'wsp-mcp-ai-agents-connector' ); ?> <code>~/.openclaw/openclaw.json</code> <?php esc_html_e( 'and paste the block below on the line right after the top-level opening', 'wsp-mcp-ai-agents-connector' ); ?> <code>{</code>.</p>
+					<p>2. <?php esc_html_e( 'Save the file, then restart the gateway:', 'wsp-mcp-ai-agents-connector' ); ?> <code>openclaw gateway restart</code></p>
+					<p>3. <?php esc_html_e( 'Verify:', 'wsp-mcp-ai-agents-connector' ); ?> <code>openclaw mcp status --verbose</code></p>
 				</div>
 				<div class="wsp-config-header">
 					<span class="wsp-config-title">~/.openclaw/openclaw.json</span>
 					<button type="button" class="wsp-copy-btn" id="wsp-copy-openclaw">
-						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'websensepro-mcp-abilities' ); ?>
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-openclaw"><?php echo esc_html( $openclaw_json ); ?></pre>
@@ -283,9 +283,9 @@ function wsp_mcp_connection_page() {
 		</div>
 
 		<p class="wsp-desc" style="margin-top:18px;">
-			<?php esc_html_e( 'Advanced: any client can also connect by sending an', 'websensepro-mcp-abilities' ); ?>
+			<?php esc_html_e( 'Advanced: any client can also connect by sending an', 'wsp-mcp-ai-agents-connector' ); ?>
 			<code style="background:#f0f0f1;padding:2px 5px;border-radius:4px;">Authorization: Bearer &lt;API Key&gt;</code>
-			<?php esc_html_e( 'header to the endpoint URL, or a WordPress Application Password via HTTP Basic auth.', 'websensepro-mcp-abilities' ); ?>
+			<?php esc_html_e( 'header to the endpoint URL, or a WordPress Application Password via HTTP Basic auth.', 'wsp-mcp-ai-agents-connector' ); ?>
 		</p>
 	</div>
 

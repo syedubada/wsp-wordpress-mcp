@@ -69,9 +69,11 @@ class WSP_MCP_Session_Store {
 	 */
 	public static function touch_session( $session_id ) {
 		global $wpdb;
-		$table = self::table();
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// Built inline from $wpdb->prefix (safe source) so static analysis can verify the table name.
+		$table = $wpdb->prefix . 'wsp_mcp_sessions';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$updated = $wpdb->query( $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix (no user input); values are bound via prepare().
 			"UPDATE {$table} SET expires_at = %s WHERE session_id = %s AND expires_at > %s",
 			gmdate( 'Y-m-d H:i:s', time() + self::TTL ),
 			$session_id,
@@ -88,9 +90,11 @@ class WSP_MCP_Session_Store {
 	 */
 	public static function get_fingerprint( $session_id ) {
 		global $wpdb;
-		$table = self::table();
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// Built inline from $wpdb->prefix (safe source) so static analysis can verify the table name.
+		$table = $wpdb->prefix . 'wsp_mcp_sessions';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$fp = $wpdb->get_var( $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix (no user input); values are bound via prepare().
 			"SELECT fingerprint FROM {$table} WHERE session_id = %s AND expires_at > %s",
 			$session_id,
 			current_time( 'mysql', true )
@@ -108,9 +112,11 @@ class WSP_MCP_Session_Store {
 	/** Remove expired sessions (daily cron). */
 	public static function cleanup_expired() {
 		global $wpdb;
-		$table = self::table();
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// Built inline from $wpdb->prefix (safe source) so static analysis can verify the table name.
+		$table = $wpdb->prefix . 'wsp_mcp_sessions';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$wpdb->query( $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix (no user input); values are bound via prepare().
 			"DELETE FROM {$table} WHERE expires_at <= %s",
 			current_time( 'mysql', true )
 		) );

@@ -32,13 +32,13 @@ function wsp_woo_sideload_image_by_url( $url, $post_id ) {
     }
 
     $file_array = array(
-        'name'     => basename( parse_url( $url, PHP_URL_PATH ) ),
+        'name'     => basename( wp_parse_url( $url, PHP_URL_PATH ) ),
         'tmp_name' => $tmp,
     );
 
     $id = media_handle_sideload( $file_array, $post_id );
     if ( is_wp_error( $id ) ) {
-        @unlink( $file_array['tmp_name'] );
+        wp_delete_file( $file_array['tmp_name'] );
         return false;
     }
 

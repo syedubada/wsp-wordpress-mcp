@@ -27,7 +27,8 @@ function wsp_mcp_add_menu() {
  * The Config Files page and its mcp-adapter snippets were removed in v2.2.0.
  */
 function wsp_mcp_redirect_legacy_config_page() {
-    if ( isset( $_GET['page'] ) && 'wsp-mcp-config' === $_GET['page'] && current_user_can( 'manage_options' ) ) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ( isset( $_GET['page'] ) && 'wsp-mcp-config' === sanitize_key( wp_unslash( $_GET['page'] ) ) && current_user_can( 'manage_options' ) ) {
         wp_safe_redirect( admin_url( 'admin.php?page=wsp-mcp-connection' ) );
         exit;
     }
@@ -122,9 +123,11 @@ function wsp_mcp_settings_page() {
         </p>
 
         <div class="wsp-stats">
-            <div class="wsp-stat"><div class="wsp-stat-n"><?php echo esc_html( $total ); ?></div><div class="wsp-stat-l">Total Abilities</div></div>
-            <div class="wsp-stat wsp-stat--on"><div class="wsp-stat-n"><?php echo esc_html( $enabled ); ?></div><div class="wsp-stat-l">Enabled</div></div>
-            <div class="wsp-stat wsp-stat--wr"><div class="wsp-stat-n"><?php echo esc_html( $writes ); ?></div><div class="wsp-stat-l">Write Access Active</div></div>
+            <div class="wsp-stats">
+                <div class="wsp-stat"><div class="wsp-stat-n"><?php echo esc_html( $total ); ?></div><div class="wsp-stat-l">Total Abilities</div></div>
+                <div class="wsp-stat wsp-stat--on"><div class="wsp-stat-n"><?php echo esc_html( $enabled ); ?></div><div class="wsp-stat-l">Enabled</div></div>
+                <div class="wsp-stat wsp-stat--wr"><div class="wsp-stat-n"><?php echo esc_html( $writes ); ?></div><div class="wsp-stat-l">Write Access Active</div></div>
+            </div>
         </div>
 
         <form method="post" action="options.php">

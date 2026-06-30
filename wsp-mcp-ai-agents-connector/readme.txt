@@ -1,5 +1,5 @@
 === WSP MCP - AI Agents Connector ===
-Contributors: websensepro
+Contributors: bilalnaseer, websensepro
 Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.2
 Tested up to: 7.0

@@ -1,7 +1,7 @@
 === WSP MCP - AI Agents Connector ===
 Contributors: bilalnaseer, websensepro
 Tags: mcp, ai, claude, model context protocol, woocommerce
-Requires at least: 6.2
+Requires at least: 6.9.0
 Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 2.3.0

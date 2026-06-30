@@ -3,7 +3,7 @@
  * Plugin Name: WSP MCP - AI Agents Connector
  * Description: Exposes WordPress content to Claude AI and other AI Agents via a built-in MCP server (no companion plugin required). Manage all abilities from Settings > MCP.
  * Version: 2.3.0
- * Requires at least: 6.2
+ * Requires at least: 6.9.0
  * Requires PHP: 7.4
  * Author: WebSensePro
  * Author URI: https://websensepro.com

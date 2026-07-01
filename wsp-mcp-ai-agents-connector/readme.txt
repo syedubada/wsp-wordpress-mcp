@@ -1,10 +1,10 @@
 === WSP MCP - AI Agents Connector ===
 Contributors: bilalnaseer, websensepro
 Tags: mcp, ai, claude, model context protocol, woocommerce
-Requires at least: 6.9.0
+Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,12 @@ Use a WordPress Application Password (sent via HTTP Basic auth) or the plugin-ge
 Any client that supports the Streamable HTTP MCP transport — Claude Desktop, MCP Inspector, IDEs, and scripts.
 
 == Changelog ==
+
+= 2.3.1 =
+* Security: Elementor write tools no longer accept raw code. Code-bearing widget types (HTML, Shortcode, Code) are rejected, code-bearing settings (Custom CSS, Custom Attributes) are stripped, and all text settings are sanitized with `wp_kses_post()` so scripts cannot be injected via `_elementor_data`.
+* Security: ACF options-page value reads now require `manage_options` (was `edit_posts`), matching the admin-level nature of global options.
+* Removed: unused legacy `wsp_register_acf_abilities()` dual-mode registration helper (dead code, not hooked).
+* Changed: `Requires at least` now uses the major-only WordPress version format (6.9).
 
 = 2.3.0 =
 * New: 27 Advanced Custom Fields tools — field groups (list, get, create, update, delete, import), fields (list, get, create, update, delete, duplicate, sync), values with dot-notation deep get/set (delete, get-all, bulk-update, field object), custom post types, taxonomies, and options pages.

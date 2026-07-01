@@ -30,6 +30,58 @@ function wsp_elementor_generate_id() {
     return substr( md5( uniqid( (string) wp_rand(), true ) ), 0, 8 );
 }
 
+// ─────────────────────────────────────────────
+// WRITE GUARDS — no arbitrary HTML/JS/CSS/PHP
+//
+// The MCP write tools accept a widget type and a settings object from the
+// client. To prevent them being used as a raw code-injection vector (e.g. the
+// Elementor "HTML", "Shortcode" or "Code" widgets, or the per-element Custom
+// CSS / Custom Attributes controls), incoming writes are constrained here:
+//   • code-bearing widget types are rejected outright, and
+//   • code-bearing settings keys are stripped while every string value is run
+//     through wp_kses_post() so markup like <script> cannot slip in via a
+//     normal text field.
+// ─────────────────────────────────────────────
+
+// Widget types that can execute or embed raw HTML/JS/CSS/PHP. Never accepted.
+function wsp_elementor_blocked_widget_types() {
+    return array( 'html', 'shortcode', 'code', 'code-highlight' );
+}
+
+function wsp_elementor_is_blocked_widget( $widget_type ) {
+    return in_array( strtolower( (string) $widget_type ), wsp_elementor_blocked_widget_types(), true );
+}
+
+// Settings keys that carry raw code / arbitrary attributes. Stripped everywhere.
+function wsp_elementor_blocked_setting_keys() {
+    return array( 'custom_css', '_attributes', 'custom_attributes', '__dynamic__' );
+}
+
+// Recursively sanitize an incoming settings array: drop code-bearing keys and
+// run every string through wp_kses_post() so <script>/on* handlers can't be
+// injected via text fields. Non-string scalars (colors, numbers, booleans) pass
+// through unchanged.
+function wsp_elementor_sanitize_settings( $settings ) {
+    if ( ! is_array( $settings ) ) {
+        return array();
+    }
+    $blocked = wsp_elementor_blocked_setting_keys();
+    $clean   = array();
+    foreach ( $settings as $key => $value ) {
+        if ( in_array( (string) $key, $blocked, true ) ) {
+            continue;
+        }
+        if ( is_array( $value ) ) {
+            $clean[ $key ] = wsp_elementor_sanitize_settings( $value );
+        } elseif ( is_string( $value ) ) {
+            $clean[ $key ] = wp_kses_post( $value );
+        } else {
+            $clean[ $key ] = $value;
+        }
+    }
+    return $clean;
+}
+
 // Recursively find an element by ID.
 function wsp_elementor_find_by_id( $elements, $id ) {
     foreach ( $elements as $el ) {
@@ -249,6 +301,7 @@ function wsp_execute_elementor_update_element( $input ) {
     $post_id    = intval( $input['post_id'] );
     $element_id = sanitize_text_field( wp_unslash( $input['element_id'] ) );
     $settings   = ( isset( $input['settings'] ) && is_array( $input['settings'] ) ) ? $input['settings'] : array();
+    $settings   = wsp_elementor_sanitize_settings( $settings );
 
     $data = wsp_elementor_get_data( $post_id );
     if ( is_wp_error( $data ) ) return array( 'success' => false, 'error' => $data->get_error_message() );
@@ -267,6 +320,11 @@ function wsp_execute_elementor_add_widget( $input ) {
     $container_id = isset( $input['container_id'] ) ? sanitize_text_field( wp_unslash( $input['container_id'] ) ) : null;
     $settings     = ( isset( $input['settings'] ) && is_array( $input['settings'] ) ) ? $input['settings'] : array();
     $position     = isset( $input['position'] ) ? intval( $input['position'] ) : null;
+
+    if ( wsp_elementor_is_blocked_widget( $widget_type ) ) {
+        return array( 'success' => false, 'error' => sprintf( 'Widget type "%s" is not allowed because it can embed raw HTML, JavaScript, or CSS. Use structured widgets (heading, text-editor, image, button, etc.) instead.', $widget_type ) );
+    }
+    $settings = wsp_elementor_sanitize_settings( $settings );
 
     $data = wsp_elementor_get_data( $post_id );
     if ( is_wp_error( $data ) ) return array( 'success' => false, 'error' => $data->get_error_message() );
@@ -310,6 +368,7 @@ function wsp_execute_elementor_add_container( $input ) {
     $type      = isset( $input['type'] ) ? sanitize_text_field( wp_unslash( $input['type'] ) ) : 'container';
     $parent_id = isset( $input['parent_id'] ) ? sanitize_text_field( wp_unslash( $input['parent_id'] ) ) : null;
     $settings  = ( isset( $input['settings'] ) && is_array( $input['settings'] ) ) ? $input['settings'] : array();
+    $settings  = wsp_elementor_sanitize_settings( $settings );
     $position  = isset( $input['position'] ) ? intval( $input['position'] ) : null;
 
     // Normalise type — only container (modern) and section (legacy) are valid root types.

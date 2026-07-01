@@ -785,7 +785,7 @@ function wsp_mcp_register_native_tools() {
 				'field_name' => array( 'type' => 'string' ),
 			) ),
 			'callback'    => 'wsp_execute_acf_get_option_value',
-			'capability'  => 'edit_posts',
+			'capability'  => 'manage_options',
 			'enable_key'  => 'wsp/acf-get-option-value',
 		) );
 		WSP_MCP_Server::register_tool( 'wsp_acf_update_option_value', array(

@@ -548,7 +548,8 @@ function wsp_execute_acf_create_options_page( $input ) {
 }
 
 function wsp_execute_acf_get_option_value( $input ) {
-    $cap_check = wsp_acf_check_cap( 'edit_posts' );
+    // Global option values are admin-level configuration — require manage_options.
+    $cap_check = wsp_acf_check_cap( 'manage_options' );
     if ( is_wp_error( $cap_check ) ) return $cap_check;
 
     $field_name = sanitize_text_field( $input['field_name'] );
@@ -570,55 +571,3 @@ function wsp_execute_acf_update_option_value( $input ) {
 // Note: no options-page delete tool — ACF options pages are re-registered on every load,
 // so a runtime delete cannot persist.
 
-// ─────────────────────────────────────────────────────────────────────────────
-// REGISTRATION (Back-compat / Dual Mode registration)
-// ─────────────────────────────────────────────────────────────────────────────
-
-function wsp_register_acf_abilities() {
-    if ( ! wsp_acf_is_active() ) return;
-
-    $base      = array( 'category' => 'wsp', 'output_schema' => array( 'type' => 'object' ), 'meta' => array( 'mcp' => array( 'public' => true ) ) );
-    $can_edit  = function() { return current_user_can( 'edit_posts' ); };
-    $can_admin = function() { return current_user_can( 'manage_options' ); };
-
-    $mapping = array(
-        'wsp/acf-list-field-groups'    => array( 'label' => 'List ACF Field Groups',    'desc' => 'List field groups.',  'cap' => $can_edit,  'callback' => 'wsp_execute_acf_list_field_groups' ),
-        'wsp/acf-get-field-group'     => array( 'label' => 'Get ACF Field Group',     'desc' => 'Get field group config.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_get_field_group' ),
-        'wsp/acf-create-field-group'  => array( 'label' => 'Create ACF Field Group',  'desc' => 'Create field group.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_create_field_group' ),
-        'wsp/acf-update-field-group'  => array( 'label' => 'Update ACF Field Group',  'desc' => 'Update field group.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_update_field_group' ),
-        'wsp/acf-delete-field-group'  => array( 'label' => 'Delete ACF Field Group',  'desc' => 'Delete field group.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_delete_field_group' ),
-        'wsp/acf-import-field-groups' => array( 'label' => 'Import ACF Field Groups',  'desc' => 'Import JSON group configs.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_import_field_groups' ),
-        'wsp/acf-list-fields'         => array( 'label' => 'List Fields inside Group', 'desc' => 'List all registered fields configs inside a specific field group.', 'cap' => $can_edit,  'callback' => 'wsp_execute_acf_list_fields' ),
-        'wsp/acf-get-field'           => array( 'label' => 'Get Field Config Details', 'desc' => 'Fetch direct key attributes and parameters for a custom field.', 'cap' => $can_edit,  'callback' => 'wsp_execute_acf_get_field' ),
-        'wsp/acf-create-field'        => array( 'label' => 'Create Field Configuration', 'desc' => 'Register a new field inside an existing custom group.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_create_field' ),
-        'wsp/acf-update-field-config' => array( 'label' => 'Update Field Configuration', 'desc' => 'Update schema configuration for a custom field.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_update_field_config' ),
-        'wsp/acf-delete-field'        => array( 'label' => 'Delete ACF Field Config', 'desc' => 'Delete field configuration.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_delete_field' ),
-        'wsp/acf-duplicate-field'     => array( 'label' => 'Duplicate ACF Field',     'desc' => 'Duplicate an existing field config.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_duplicate_field' ),
-        'wsp/acf-sync-fields'         => array( 'label' => 'Sync ACF Fields',         'desc' => 'Sync fields structure.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_sync_fields' ),
-        'wsp/acf-get-value-deep'      => array( 'label' => 'Get ACF Value Deep',      'desc' => 'Deep read with dot notation.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_get_value_deep' ),
-        'wsp/acf-update-value-deep'   => array( 'label' => 'Update ACF Value Deep',   'desc' => 'Deep write with dot notation.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_update_value_deep' ),
-        'wsp/acf-delete-value'        => array( 'label' => 'Delete ACF Value',        'desc' => 'Delete field value metadata.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_delete_value' ),
-        'wsp/acf-get-all-values'      => array( 'label' => 'Get All ACF Values',      'desc' => 'Get all fields values.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_get_all_values' ),
-        'wsp/acf-bulk-update-values'  => array( 'label' => 'Bulk Update ACF Values',  'desc' => 'Bulk update values.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_bulk_update_values' ),
-        'wsp/acf-get-field-object'    => array( 'label' => 'Get ACF Field Object',    'desc' => 'Get metadata with values.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_get_field_object' ),
-        'wsp/acf-list-post-types'     => array( 'label' => 'List Custom Post Types',  'desc' => 'List CPTs.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_list_post_types' ),
-        'wsp/acf-create-post-type'    => array( 'label' => 'Create Custom Post Type', 'desc' => 'Programmatically register a CPT.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_create_post_type' ),
-        'wsp/acf-list-taxonomies'     => array( 'label' => 'List Taxonomies',         'desc' => 'List taxonomies.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_list_taxonomies' ),
-        'wsp/acf-create-taxonomy'     => array( 'label' => 'Create Taxonomy',         'desc' => 'Programmatically register taxonomy.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_create_taxonomy' ),
-        'wsp/acf-list-options-pages'  => array( 'label' => 'List Options Pages',      'desc' => 'List ACF Options pages.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_list_options_pages' ),
-        'wsp/acf-create-options-page' => array( 'label' => 'Create Options Page',    'desc' => 'Register Options Page.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_create_options_page' ),
-        'wsp/acf-get-option-value'    => array( 'label' => 'Get Options Page Value',  'desc' => 'Get value from options page.', 'cap' => $can_edit, 'callback' => 'wsp_execute_acf_get_option_value' ),
-        'wsp/acf-update-option-value' => array( 'label' => 'Update Options Value',    'desc' => 'Update value on options page.', 'cap' => $can_admin, 'callback' => 'wsp_execute_acf_update_option_value' ),
-    );
-
-    foreach ( $mapping as $key => $data ) {
-        if ( wsp_mcp_is_enabled( $key ) ) {
-            wp_register_ability( $key, array_merge( $base, array(
-                'label'               => $data['label'],
-                'description'         => $data['desc'],
-                'permission_callback' => $data['cap'],
-                'execute_callback'    => $data['callback'],
-            ) ) );
-        }
-    }
-}

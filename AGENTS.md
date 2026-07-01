@@ -31,7 +31,7 @@ These three files give you complete project understanding without touching the c
 ## What this plugin is
 
 **Plugin Name:** WSP MCP - AI Agents Connector  
-**Version:** 2.3.0  
+**Version:** 2.3.1  
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
 **Constant prefix:** `WSP_MCP_`
@@ -135,7 +135,7 @@ wsp-wordpress-mcp/
 
 | Constant | Value |
 |---|---|
-| `WSP_MCP_VERSION` | `'2.3.0'` |
+| `WSP_MCP_VERSION` | `'2.3.1'` |
 | `WSP_MCP_OPTION` | `'wsp_mcp_abilities'` (per-ability on/off toggles) |
 | `WSP_MCP_DIR` | `plugin_dir_path(__FILE__)` |
 
@@ -313,6 +313,11 @@ Only registered if `class_exists('\Elementor\Plugin')`. All abilities require `e
 - `wsp_elementor_generate_id()` — 8-char hex via `md5(uniqid(...))`.
 - Helper functions for tree traversal: `wsp_elementor_find_by_id`, `wsp_elementor_remove_by_id`, `wsp_elementor_update_by_id`, `wsp_elementor_insert_into`, `wsp_elementor_first_insertable`, `wsp_elementor_simplify_tree`, `wsp_elementor_search_tree`.
 
+**Elementor write guards (v2.3.1 — no arbitrary code):** every write tool (`add_widget`, `update_element`, `add_container`) must run incoming data through these before `wsp_elementor_save_data()`:
+- `wsp_elementor_is_blocked_widget($widget_type)` — rejects code-bearing widget types (`html`, `shortcode`, `code`, `code-highlight`). `add_widget` returns an error for these.
+- `wsp_elementor_sanitize_settings($settings)` — recursively drops code-bearing keys (`custom_css`, `_attributes`, `custom_attributes`, `__dynamic__`) and runs every string through `wp_kses_post()`. Applied in all three write tools.
+- Rationale: WordPress.org prohibits arbitrary HTML/JS/CSS/PHP insertion; `_elementor_data` + the HTML widget was the vector. **Any new Elementor write tool must reuse both guards.**
+
 #### WooCommerce (`woocommerce.php`)
 
 Only registered if `class_exists('WooCommerce')`. All 15 tools are OFF by default (added in v2.1.0). MCP tool names use the `wsp_woo_*` form; enable keys use `wsp/woo-*`.
@@ -373,7 +378,7 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
 | `wsp/acf-create-taxonomy` | Create Taxonomy | write | `manage_options` |
 | `wsp/acf-list-options-pages` | List Options Pages | read | `edit_posts` |
 | `wsp/acf-create-options-page` | Create Options Page | write | `manage_options` |
-| `wsp/acf-get-option-value` | Get Option Value | read | `edit_posts` |
+| `wsp/acf-get-option-value` | Get Option Value | read | `manage_options` |
 | `wsp/acf-update-option-value` | Update Option Value | write | `manage_options` |
 
 - **Target resolution** — value tools (`get-value-deep`, `update-value-deep`, `delete-value`,

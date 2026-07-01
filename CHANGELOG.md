@@ -8,6 +8,20 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.1] — 2026-07-01
+
+### Security
+- **Elementor write tools hardened against arbitrary code insertion** (`includes/abilities/elementor.php`). New guards applied in `wsp_execute_elementor_add_widget()`, `wsp_execute_elementor_update_element()`, and `wsp_execute_elementor_add_container()`:
+  - `wsp_elementor_is_blocked_widget()` rejects code-bearing widget types (`html`, `shortcode`, `code`, `code-highlight`) before they can be written to `_elementor_data`.
+  - `wsp_elementor_sanitize_settings()` recursively strips code-bearing setting keys (`custom_css`, `_attributes`, `custom_attributes`, `__dynamic__`) and runs every string value through `wp_kses_post()`, so `<script>`/`on*` handlers can't be injected via a normal text field. Structured content writes (heading, text-editor, image, button, layout, etc.) continue to work.
+- **ACF options-page value reads now require `manage_options`** (was `edit_posts`) in both the native tool spec (`includes/tools/native-tools.php`, `wsp_acf_get_option_value`) and the callback's own cap check (`wsp_execute_acf_get_option_value`). Global options are admin-level configuration.
+
+### Removed
+- Dead `wsp_register_acf_abilities()` helper (`includes/abilities/acf.php`) — the old dual-mode `wp_register_ability` path, unhooked since the v2.2 native-only migration. Flagged by the WordPress.org review tool for a broad `edit_posts` permission_callback; deleting it removes the finding at its source.
+
+### Changed
+- `Requires at least` header/readme value changed from `6.9.0` to major-only `6.9` per WordPress.org versioning rules (the minor is ignored).
+
 ## [2.3.0] — 2026-06-30
 
 ### Added

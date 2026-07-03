@@ -10,7 +10,7 @@
 
 ## 🎬 Watch the Tutorial
 
-[![WSP WordPress MCP — Full Tutorial](https://img.youtube.com/vi/nHE6PcA5pfc/maxresdefault.jpg)](https://youtu.be/nHE6PcA5pfc)
+[![WSP WordPress MCP — Full Tutorial](https://img.youtube.com/vi/1hGSUAdRxiU/maxresdefault.jpg)](https://youtu.be/1hGSUAdRxiU)
 
 ---
 

@@ -8,6 +8,11 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.4.0] — 2026-07-04
+
+### Added
+- **OpenCode connection tab** on the **MCP > Connection** page (`includes/admin/connection-page.php`). Sixth per-client snippet, joining Claude Desktop / Cursor / Codex / Antigravity / OpenClaw. OpenCode connects natively over remote HTTP (no Node.js / mcp-remote bridge), using its `mcp.<name>.{ type: "remote", url, enabled, oauth, headers }` schema with the API key inlined in the `Authorization` header. The snippet is a **full-file** config (includes `$schema` and the top-level wrapper) so users can create a fresh `~/.config/opencode/opencode.json` and paste directly; instructions cover create-file → paste → restart. Server name auto-derives as `wsp-<host>`, consistent with the other tabs.
+
 ## [2.3.1] — 2026-07-01
 
 ### Security

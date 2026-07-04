@@ -3,7 +3,7 @@
  * MCP Connection admin page (Milestone M6).
  *
  * Surfaces the native MCP endpoint URL and API key, with per-client copy-paste
- * connection snippets (Claude Desktop, Cursor, Codex, Antigravity, OpenClaw) for
+ * connection snippets (Claude Desktop, Cursor, Codex, Antigravity, OpenClaw, OpenCode) for
  * the native v2.0 server — no companion plugin or MCP Adapter required. Handles
  * API-key regeneration via an admin-post action.
  *
@@ -90,6 +90,7 @@ function wsp_mcp_enqueue_connection_assets() {
 				makeCopyBtn("wsp-copy-codex",       "wsp-code-codex");
 				makeCopyBtn("wsp-copy-antigravity", "wsp-code-antigravity");
 				makeCopyBtn("wsp-copy-openclaw",    "wsp-code-openclaw");
+				makeCopyBtn("wsp-copy-opencode",    "wsp-code-opencode");
 			});
 		';
 		wp_add_inline_script( 'common', $custom_js );
@@ -183,6 +184,24 @@ function wsp_mcp_connection_page() {
 		. "        }\n"
 		. "    }\n"
 		. "},";
+
+	// OpenCode: native remote HTTP under the `mcp` key. Full-file snippet
+	// (includes $schema) so users can create a fresh opencode.json and paste.
+	$opencode_json = wp_json_encode(
+		array(
+			'$schema' => 'https://opencode.ai/config.json',
+			'mcp'     => array(
+				$conn => array(
+					'type'    => 'remote',
+					'url'     => $endpoint,
+					'enabled' => true,
+					'oauth'   => false,
+					'headers' => array( 'Authorization' => 'Bearer ' . $api_key ),
+				),
+			),
+		),
+		JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+	);
 	?>
 	<div class="wsp-wrap">
 		<div class="wsp-header">
@@ -227,6 +246,7 @@ function wsp_mcp_connection_page() {
 			<button type="button" class="wsp-tab-btn" data-tab="codex">Codex</button>
 			<button type="button" class="wsp-tab-btn" data-tab="antigravity">Antigravity</button>
 			<button type="button" class="wsp-tab-btn" data-tab="openclaw">OpenClaw</button>
+			<button type="button" class="wsp-tab-btn" data-tab="opencode">OpenCode</button>
 		</div>
 
 		<!-- Claude Desktop -->
@@ -321,6 +341,25 @@ function wsp_mcp_connection_page() {
 					</button>
 				</div>
 				<pre class="wsp-code-area" id="wsp-code-openclaw"><?php echo esc_html( $openclaw_json ); ?></pre>
+			</div>
+		</div>
+
+		<!-- OpenCode -->
+		<div class="wsp-tab-panel" id="wsp-tab-opencode">
+			<div class="wsp-config-box">
+				<div class="wsp-instructions">
+					<p><span class="wsp-badge"><?php esc_html_e( 'Direct HTTP', 'wsp-mcp-ai-agents-connector' ); ?></span> <?php esc_html_e( 'OpenCode connects to the endpoint natively as a remote MCP server — no Node.js needed.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>1. <?php esc_html_e( 'Create the global config file', 'wsp-mcp-ai-agents-connector' ); ?> <code>~/.config/opencode/opencode.json</code> <?php esc_html_e( 'if it does not exist yet.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>2. <?php esc_html_e( 'Paste the config below into that file (merge into an existing', 'wsp-mcp-ai-agents-connector' ); ?> <code>mcp</code> <?php esc_html_e( 'block if you already have one).', 'wsp-mcp-ai-agents-connector' ); ?></p>
+					<p>3. <?php esc_html_e( 'Restart OpenCode so it reads the new config and connects the MCP server.', 'wsp-mcp-ai-agents-connector' ); ?></p>
+				</div>
+				<div class="wsp-config-header">
+					<span class="wsp-config-title">~/.config/opencode/opencode.json</span>
+					<button type="button" class="wsp-copy-btn" id="wsp-copy-opencode">
+						<span class="dashicons dashicons-clipboard" style="font-size:16px;width:16px;height:16px;"></span> <?php esc_html_e( 'Copy', 'wsp-mcp-ai-agents-connector' ); ?>
+					</button>
+				</div>
+				<pre class="wsp-code-area" id="wsp-code-opencode"><?php echo esc_html( $opencode_json ); ?></pre>
 			</div>
 		</div>
 

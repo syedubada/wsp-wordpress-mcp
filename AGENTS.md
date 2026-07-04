@@ -80,7 +80,7 @@ WooCommerce tools only if `class_exists('WooCommerce')`; ACF tools only if `wsp_
 
 **Admin:** `includes/admin/connection-page.php` adds **MCP > Connection** (endpoint URL, API key +
 regenerate, and per-client tabbed config snippets for Claude Desktop / Cursor / Codex / Antigravity /
-OpenClaw — all native, no MCP Adapter). `dependency.php` provides
+OpenClaw / OpenCode — all native, no MCP Adapter). `dependency.php` provides
 `wsp_mcp_abilities_api_available()` (gates dual-mode) and `wsp_mcp_transport_available()` (always
 true in v2.0).
 
@@ -425,7 +425,7 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
 - **Primary, native-transport page (v2.0).** Top card shows the native endpoint
   (`rest_url('wsp-mcp/v1/mcp')`) + API key with a Regenerate button (nonce-protected admin-post action
   `wsp_mcp_regenerate_key` → `WSP_MCP_Auth::regenerate_api_key()`).
-- Five tabbed, copy-to-clipboard snippets, all pointing at the native endpoint with the **API key
+- Six tabbed, copy-to-clipboard snippets, all pointing at the native endpoint with the **API key
   hardcoded into the auth header** (no `${VAR}` env interpolation — avoids the mcp-remote "missing env
   var" failure). Server name auto-derives as `wsp-<host>`:
   - **Claude Desktop** — `mcpServers` + `npx -y mcp-remote <url> --header "Authorization: Bearer <key>"` (stdio bridge, needs Node.js; Claude Desktop config files don't support remote HTTP directly).
@@ -433,6 +433,7 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
   - **Codex** — native streamable HTTP TOML: `[mcp_servers.<name>]` `url` + `http_headers = { "Authorization" = "Bearer <key>" }` (`~/.codex/config.toml`).
   - **Antigravity** — native remote HTTP, but the URL key is **`serverUrl`** (not `url`): `mcpServers.<name>.{ serverUrl, headers }` (`~/.gemini/config/mcp_config.json`).
   - **OpenClaw** — nested **`mcp.servers`** schema (not top-level `mcpServers`) + `mcp-remote` bridge, key inlined in the header (`~/.openclaw/openclaw.json`).
+  - **OpenCode** — native remote HTTP under the **`mcp`** key: `mcp.<name>.{ type: "remote", url, enabled, oauth, headers: { Authorization: "Bearer <key>" } }`. Full-file snippet including `$schema` so users can create a fresh `~/.config/opencode/opencode.json`.
 - Self-contained tab/copy UI markup + JS.
 
 > **Removed in v2.2:** the old **MCP > Config Files** page (`config-page.php`) that generated

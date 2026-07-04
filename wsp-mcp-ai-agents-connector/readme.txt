@@ -4,7 +4,7 @@ Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.3.1
+Stable tag: 2.4.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,9 @@ Use a WordPress Application Password (sent via HTTP Basic auth) or the plugin-ge
 Any client that supports the Streamable HTTP MCP transport — Claude Desktop, MCP Inspector, IDEs, and scripts.
 
 == Changelog ==
+
+= 2.4.0 =
+* New: OpenCode connection tab on the MCP > Connection page — a sixth copy-paste config snippet joining Claude Desktop, Cursor, Codex, Antigravity, and OpenClaw. OpenCode connects natively over remote HTTP (no Node.js bridge); the snippet is a full `~/.config/opencode/opencode.json` file with the API key inlined in the header, ready to create and paste.
 
 = 2.3.1 =
 * Security: Elementor write tools no longer accept raw code. Code-bearing widget types (HTML, Shortcode, Code) are rejected, code-bearing settings (Custom CSS, Custom Attributes) are stripped, and all text settings are sanitized with `wp_kses_post()` so scripts cannot be injected via `_elementor_data`.

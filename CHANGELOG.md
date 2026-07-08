@@ -8,6 +8,18 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.4.1] — 2026-07-08
+
+### Security (WordPress.org review)
+- **ACF value-write tools hardened against arbitrary code insertion** (`includes/abilities/acf.php`). The WordPress.org review flagged that the ACF write tools accepted arbitrary unsanitized values and stored them via `update_field()`, giving MCP clients a path to persist raw `<script>`/`<style>`/inline-handler markup (stored XSS) into fields and options. New recursive sanitizer `wsp_acf_sanitize_value()` now runs every incoming value through sanitization before storage:
+  - Arrays are walked recursively (repeaters, groups, flexible content), with string keys sanitized via `sanitize_text_field()`.
+  - Strings pass through `wp_kses_post()`, which strips `<script>`/`<style>` tags and `on*` event-handler attributes while preserving the post-safe HTML that legitimate WYSIWYG fields rely on.
+  - Non-string scalars (int, float, bool, null) carry no executable payload and are returned unchanged.
+- Applied in all three `update_field()` write paths: `wsp_execute_acf_update_value_deep()`, `wsp_execute_acf_bulk_update_values()`, and `wsp_execute_acf_update_option_value()` (each previously only ran `wp_unslash()` before saving).
+
+### Notes
+- The Claude Desktop connection snippet remains correct for macOS/Linux. Windows users whose Node.js lives under `C:\Program Files\nodejs` may hit a `cmd /C` quoting bug (`'C:\Program' is not recognized`) caused by the space in the path; the workaround is to wrap the launch as `"command": "cmd", "args": ["/c", "npx", …]`. Tracked in issue #13.
+
 ## [2.4.0] — 2026-07-04
 
 ### Added

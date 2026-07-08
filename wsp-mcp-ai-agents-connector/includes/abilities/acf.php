@@ -115,6 +115,33 @@ function wsp_acf_get_nested_value( $data, $path ) {
 }
 
 /**
+ * Recursively sanitize a value destined for ACF storage.
+ *
+ * ACF field values may be scalars or nested arrays (repeaters, groups, flexible
+ * content). To stop the MCP write tools from being used to store executable
+ * payloads, every string is passed through wp_kses_post(), which removes
+ * <script>/<style> tags and on* event-handler attributes while preserving the
+ * post-safe HTML that legitimate WYSIWYG fields rely on. Non-string scalars
+ * (int, float, bool, null) carry no executable payload and are returned as-is.
+ */
+function wsp_acf_sanitize_value( $value ) {
+    if ( is_array( $value ) ) {
+        $clean = array();
+        foreach ( $value as $key => $item ) {
+            $clean_key           = is_string( $key ) ? sanitize_text_field( $key ) : $key;
+            $clean[ $clean_key ] = wsp_acf_sanitize_value( $item );
+        }
+        return $clean;
+    }
+
+    if ( is_string( $value ) ) {
+        return wp_kses_post( $value );
+    }
+
+    return $value;
+}
+
+/**
  * Dot-notation deep setter helper.
  */
 function wsp_acf_set_nested_value( &$data, $path, $value ) {
@@ -348,7 +375,7 @@ function wsp_execute_acf_update_value_deep( $input ) {
 
     $field_name = sanitize_text_field( $input['field_name'] );
     $path       = isset( $input['path'] ) ? sanitize_text_field( $input['path'] ) : '';
-    $value      = wp_unslash( $input['value'] );
+    $value      = wsp_acf_sanitize_value( wp_unslash( $input['value'] ) );
 
     if ( empty( $path ) ) {
         update_field( $field_name, $value, $selector );
@@ -398,7 +425,7 @@ function wsp_execute_acf_bulk_update_values( $input ) {
 
     $updated = array();
     foreach ( $fields as $key => $val ) {
-        $clean_val = wp_unslash( $val );
+        $clean_val = wsp_acf_sanitize_value( wp_unslash( $val ) );
         update_field( $key, $clean_val, $selector );
         $updated[ $key ] = $clean_val;
     }
@@ -562,7 +589,7 @@ function wsp_execute_acf_update_option_value( $input ) {
     if ( is_wp_error( $cap_check ) ) return $cap_check;
 
     $field_name = sanitize_text_field( $input['field_name'] );
-    $value = wp_unslash( $input['value'] );
+    $value = wsp_acf_sanitize_value( wp_unslash( $input['value'] ) );
 
     update_field( $field_name, $value, 'options' );
     return array( 'success' => true, 'field_name' => $field_name, 'value' => get_field( $field_name, 'options' ) );

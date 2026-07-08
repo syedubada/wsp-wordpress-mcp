@@ -31,7 +31,7 @@ These three files give you complete project understanding without touching the c
 ## What this plugin is
 
 **Plugin Name:** WSP MCP - AI Agents Connector  
-**Version:** 2.3.1  
+**Version:** 2.4.1  
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
 **Constant prefix:** `WSP_MCP_`
@@ -391,11 +391,17 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
   for user, `manage_categories` for term, `manage_options` for the `options` target.
 - **Deep get/set** — `wsp_acf_get_nested_value()` / `wsp_acf_set_nested_value()` walk a dot-notation
   `path` (e.g. `repeater.0.text_field`) over the field's array/object value.
+- **Value sanitization (v2.4.1)** — every value written through `update_field()` is passed through
+  `wsp_acf_sanitize_value()` first: it recurses into arrays (repeaters/groups/flexible content),
+  sanitizes string keys with `sanitize_text_field()`, runs each string value through `wp_kses_post()`
+  (strips `<script>`/`<style>` and `on*` handlers, keeps post-safe HTML for WYSIWYG), and returns
+  non-string scalars unchanged. Applied in `update_value_deep`, `bulk_update_values`, and
+  `update_option_value`. Closes the WordPress.org "arbitrary code insertion" finding (stored XSS).
 - **CPT/taxonomy creation** requires ACF 6.1+ (`acf_update_post_type()` / `acf_update_taxonomy()`);
   options-page creation requires ACF Pro (`acf_add_options_page()`). Each falls back to a `WP_Error`
   `unsupported` when the underlying function is absent.
 - Helpers: `wsp_acf_is_active()`, `wsp_acf_check_cap()`, `wsp_acf_validate_target()`,
-  `wsp_acf_get_nested_value()`, `wsp_acf_set_nested_value()`.
+  `wsp_acf_get_nested_value()`, `wsp_acf_set_nested_value()`, `wsp_acf_sanitize_value()`.
 
 > **No delete-options-page tool.** A `wsp/acf-delete-options-page` tool was proposed but dropped:
 > ACF options pages are re-registered on every load (via `acf_add_options_page()` hooks), so a

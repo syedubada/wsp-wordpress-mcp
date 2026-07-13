@@ -1,5 +1,5 @@
 === WSP MCP - AI Agents Connector ===
-Contributors: bilalnaseer, websensepro
+Contributors: bilalnaseer
 Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.9
 Tested up to: 7.0
@@ -13,28 +13,72 @@ Expose your WordPress site to AI agents (Claude, Cursor, and other MCP clients) 
 == Description ==
 
 WSP MCP - AI Agents Connector turns your WordPress site into a Model Context Protocol (MCP) server. AI clients can read and edit posts, pages, categories, tags, media, comments, users, and (when installed) Yoast SEO meta and Elementor page content — all under granular, per-ability admin control.
-
+ 
 The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, and Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active.
-
+ 
+Built and maintained by the [WebSensePro](https://websensepro.com/) team. For documentation, setup guides, and connection help, visit the plugin home at [freewordpressmcp.com](https://freewordpressmcp.com/).
+ 
 = Key features =
-
+ 
 * Built-in MCP server over a single REST endpoint (Streamable HTTP, JSON-RPC 2.0) — no external dependency.
 * Per-ability on/off toggles in **MCP > Settings**; write abilities are off by default.
 * Two authentication methods: WordPress Application Passwords (HTTP Basic) or a plugin-generated API key (`Authorization: Bearer` or `X-WSP-MCP-API-Key`).
 * Capability checks on every tool — an AI client can only do what its authenticated user can do.
 * Optional Yoast SEO and Elementor tools, shown only when those plugins are active.
-
-= What AI clients can do =
-
-* Read / create / update / delete posts and pages
-* Manage categories and tags
-* Read and moderate comments
-* Read media, users, site info, and active plugins
-* Search content
-* Read and update Yoast SEO meta (requires Yoast SEO)
-* Read and edit Elementor page structure (requires Elementor)
-* Manage WooCommerce products, variations, orders, refunds, coupons, customers, order notes, sales reports, low-stock alerts, and review moderation (requires WooCommerce)
-* Manage Advanced Custom Fields — field groups, fields, field values (with dot-notation deep access), custom post types, taxonomies, and options pages (requires ACF)
+ 
+= Complete tools list =
+ 
+Every tool is individually toggleable in **MCP > Settings**, and all write tools are off by default.
+ 
+**Core WordPress**
+ 
+* Posts — read, create, update, delete
+* Pages — read, create, update, delete
+* Categories — list, create, update, delete
+* Tags — list, create, update, delete
+* Comments — read and moderate (approve, spam, trash)
+* Media — read the media library
+* Users — read user data
+* Site info — read general site details
+* Plugins — list active plugins
+* Search — search across site content
+ 
+**Yoast SEO** (requires Yoast SEO)
+ 
+* Read SEO title, meta description, and focus keyphrase
+* Update SEO title, meta description, and focus keyphrase
+ 
+**Elementor** (requires Elementor)
+ 
+* Read Elementor page structure
+* Edit Elementor page structure (code-bearing widgets and settings are blocked/sanitized for security)
+ 
+**WooCommerce** (requires WooCommerce — financial and PII tools require the `manage_woocommerce` capability)
+ 
+* Products — list, get, create, update
+* Product variations — create
+* Orders — list, update status
+* Refunds — process refunds
+* Coupons — create, list
+* Order notes — add order notes
+* Customers — read customer data
+* Sales report — read sales reporting
+* Low-stock alerts — read low-stock products
+* Reviews — moderate product reviews
+ 
+**Advanced Custom Fields** (requires ACF — structural changes require `manage_options`; value tools enforce per-object capabilities)
+ 
+* Field groups — list, get, create, update, delete, import
+* Fields — list, get, create, update, delete, duplicate, sync
+* Field values — get and set with dot-notation deep access, delete, get-all, bulk-update, and field object
+* Custom post types — manage
+* Taxonomies — manage
+* Options pages — manage
+ 
+= Links =
+ 
+* Plugin home & docs: [freewordpressmcp.com](https://freewordpressmcp.com/)
+* Built by: [WebSensePro](https://websensepro.com/)
 
 == Installation ==
 

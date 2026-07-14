@@ -15,7 +15,7 @@ on:
     branches: [main]
     paths:
       - 'wsp-mcp-ai-agents-connector/includes/registry.php'
-      - 'bin/generate-abilities-md.php'
+      - 'bin/**'
       - '.github/workflows/sync-abilities.yml'
   workflow_dispatch:
 
@@ -52,10 +52,13 @@ jobs:
           token: ${{ secrets.WEBSITE_REPO_TOKEN }}
           path: website
 
-      - name: Copy generated files into website repo
+      - name: Copy generated docs into website repo
         run: |
           cp abilities.md website/abilities.md
           cp abilities.json website/abilities.json
+
+      - name: Patch website HTML + sitemap from registry
+        run: php bin/patch-website.php website/abilities-directory.html website/sitemap.xml
 
       - name: Open PR on website repo
         uses: peter-evans/create-pull-request@v6
@@ -67,9 +70,11 @@ jobs:
           delete-branch: true
           title: 'Sync abilities from plugin registry'
           body: |
-            Automated update of `abilities.md` / `abilities.json`, generated from the
-            plugin's `includes/registry.php`.
+            Automated update generated from the plugin's `includes/registry.php`:
 
-            **Before merging**, update to match:
-            - the `ABILITIES` array in `abilities-directory.html`
-            - the `lastmod` date for that page in `sitemap.xml`
+            - `abilities.md` — human-readable tool registry
+            - `abilities.json` — machine-readable tool registry
+            - `abilities-directory.html` — the `ABILITIES` array, regenerated in place
+            - `sitemap.xml` — `lastmod` for the abilities-directory page
+
+            Review the diff and merge. No manual edits needed.

@@ -8,6 +8,23 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.5.0] — 2026-07-14
+
+### Added — Media library tool suite (`includes/abilities/media.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- Expanded the single read-only media tool into a full suite of seven tools, all OFF by default and toggled from **MCP > Settings**:
+  - `wsp_list_media` (`wsp/list-media`, read) — browse and search the library by `type` (MIME), `search` keyword, `year`/`month`, with `per_page`/`page` pagination.
+  - `wsp_get_media` (`wsp/get-media`, read) — **repurposed** to return the full metadata of a single attachment by `id` (title, URL, MIME, date, alt, caption, description, filename, filesize, `wp_get_attachment_metadata()`, author, parent). Browse/search behavior moved to `wsp_list_media`.
+  - `wsp_count_media` (`wsp/count-media`, read) — counts grouped by MIME type plus a total, via `wp_count_attachments()`.
+  - `wsp_update_media` (`wsp/update-media`, write) — update `title`, `alt`, `caption`, `description` by `id`.
+  - `wsp_delete_media` (`wsp/delete-media`, write) — permanent delete via `wp_delete_attachment( $id, true )`; requires `delete_posts`.
+  - `wsp_upload_media` (`wsp/upload-media`, write) and `wsp_upload_media_from_url` (`wsp/upload-media-from-url`, write) — sideload a file from a `url` via `download_url()` + `media_handle_sideload()`, with optional `filename`, `title`, `alt`, `caption`, and `post_id` to attach to. `wsp_execute_upload_media()` wraps `wsp_execute_upload_media_from_url()`.
+- New shared helper `wsp_media_item_data()` normalizes attachment metadata for the get/update/upload responses.
+
+### Security
+- All inputs sanitized (`sanitize_text_field`/`wp_kses_post`/`sanitize_mime_type`/`esc_url_raw`/`sanitize_file_name`/`intval`); alt text written to `_wp_attachment_image_alt`. Read tools gated by `upload_files`, delete by `delete_posts`. Temp download files are removed with `wp_delete_file()` on sideload failure.
+
+---
+
 ## [2.4.1] — 2026-07-08
 
 ### Security (WordPress.org review)

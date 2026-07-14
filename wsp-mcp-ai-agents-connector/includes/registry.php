@@ -33,7 +33,13 @@ function wsp_mcp_ability_registry() {
         'wsp/approve-comment' => array( 'label' => 'Approve Comment', 'description' => 'Approve a pending comment by ID.',                           'group' => 'Comments', 'access' => 'write', 'default' => false ),
         'wsp/delete-comment'  => array( 'label' => 'Delete Comment',  'description' => 'Move a comment to trash by ID.',                             'group' => 'Comments', 'access' => 'write', 'default' => false ),
         // MEDIA
-        'wsp/get-media'       => array( 'label' => 'Read Media',      'description' => 'List media library items (title, URL, MIME type, date).',    'group' => 'Media',    'access' => 'read',  'default' => false ),
+        'wsp/list-media'            => array( 'label' => 'List Media',           'description' => 'Browse and search the media library by type, keyword, or date.',          'group' => 'Media', 'access' => 'read',  'default' => false ),
+        'wsp/get-media'             => array( 'label' => 'Get Media',            'description' => 'Retrieve the full metadata of a specific media file by ID.',               'group' => 'Media', 'access' => 'read',  'default' => false ),
+        'wsp/count-media'           => array( 'label' => 'Count Media',          'description' => 'Get media library counts grouped by MIME type, plus a total.',             'group' => 'Media', 'access' => 'read',  'default' => false ),
+        'wsp/update-media'          => array( 'label' => 'Update Media',         'description' => 'Update the title, alt text, caption, or description of a media file by ID.', 'group' => 'Media', 'access' => 'write', 'default' => false ),
+        'wsp/delete-media'          => array( 'label' => 'Delete Media',         'description' => 'Permanently delete a media file from the media library by ID.',            'group' => 'Media', 'access' => 'write', 'default' => false ),
+        'wsp/upload-media'          => array( 'label' => 'Upload Media',         'description' => 'Upload an image or file from a URL directly into the media library.',       'group' => 'Media', 'access' => 'write', 'default' => false ),
+        'wsp/upload-media-from-url' => array( 'label' => 'Upload Media From URL', 'description' => 'Pull an image from any web link straight into your media library.',         'group' => 'Media', 'access' => 'write', 'default' => false ),
         // USERS
         'wsp/get-users'       => array( 'label' => 'Read Users',      'description' => 'List users with display name, email, and role.',             'group' => 'Users',    'access' => 'read',  'default' => false ),
         // SEARCH

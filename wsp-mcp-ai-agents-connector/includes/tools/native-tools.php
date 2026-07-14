@@ -180,17 +180,89 @@ function wsp_mcp_register_native_tools() {
 		'enable_key'  => 'wsp/delete-comment',
 	) );
 
-	// ---- Media / Users / Search / Site ----
-	WSP_MCP_Server::register_tool( 'wsp_get_media', array(
-		'description' => 'Lists media library items.',
+	// ---- Media ----
+	WSP_MCP_Server::register_tool( 'wsp_list_media', array(
+		'description' => 'Browse and search the WordPress media library by type, keyword, or date.',
 		'inputSchema' => array( 'type' => 'object', 'properties' => array(
-			'per_page' => array( 'type' => 'integer' ),
-			'type'     => array( 'type' => 'string', 'description' => 'MIME type filter, e.g. image.' ),
+			'per_page' => array( 'type' => 'integer', 'description' => 'Items per page. Default 20.' ),
+			'page'     => array( 'type' => 'integer', 'description' => 'Page number. Default 1.' ),
+			'type'     => array( 'type' => 'string', 'description' => 'MIME type filter, e.g. image or image/png.' ),
+			'search'   => array( 'type' => 'string', 'description' => 'Keyword to search titles/filenames.' ),
+			'year'     => array( 'type' => 'integer', 'description' => 'Filter by upload year.' ),
+			'month'    => array( 'type' => 'integer', 'description' => 'Filter by upload month (1-12).' ),
+		) ),
+		'callback'    => 'wsp_execute_list_media',
+		'capability'  => 'upload_files',
+		'enable_key'  => 'wsp/list-media',
+	) );
+	WSP_MCP_Server::register_tool( 'wsp_get_media', array(
+		'description' => 'Retrieve the full metadata of a specific media file by ID.',
+		'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+			'id' => array( 'type' => 'integer', 'description' => 'Attachment ID.' ),
 		) ),
 		'callback'    => 'wsp_execute_get_media',
 		'capability'  => 'upload_files',
 		'enable_key'  => 'wsp/get-media',
 	) );
+	WSP_MCP_Server::register_tool( 'wsp_count_media', array(
+		'description' => 'Get media library counts grouped by MIME type, plus a total.',
+		'inputSchema' => $obj,
+		'callback'    => 'wsp_execute_count_media',
+		'capability'  => 'upload_files',
+		'enable_key'  => 'wsp/count-media',
+	) );
+	WSP_MCP_Server::register_tool( 'wsp_update_media', array(
+		'description' => 'Update the title, alt text, caption, or description of a media file by ID.',
+		'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+			'id'          => array( 'type' => 'integer', 'description' => 'Attachment ID.' ),
+			'title'       => array( 'type' => 'string' ),
+			'alt'         => array( 'type' => 'string', 'description' => 'Alternative text.' ),
+			'caption'     => array( 'type' => 'string' ),
+			'description' => array( 'type' => 'string' ),
+		) ),
+		'callback'    => 'wsp_execute_update_media',
+		'capability'  => 'upload_files',
+		'enable_key'  => 'wsp/update-media',
+	) );
+	WSP_MCP_Server::register_tool( 'wsp_delete_media', array(
+		'description' => 'Permanently delete a media file from the WordPress media library by ID.',
+		'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+			'id' => array( 'type' => 'integer', 'description' => 'Attachment ID.' ),
+		) ),
+		'callback'    => 'wsp_execute_delete_media',
+		'capability'  => 'delete_posts',
+		'enable_key'  => 'wsp/delete-media',
+	) );
+	WSP_MCP_Server::register_tool( 'wsp_upload_media', array(
+		'description' => 'Upload an image or file from a URL directly into the WordPress media library.',
+		'inputSchema' => array( 'type' => 'object', 'required' => array( 'url' ), 'properties' => array(
+			'url'      => array( 'type' => 'string', 'description' => 'Source URL of the file to upload.' ),
+			'filename' => array( 'type' => 'string', 'description' => 'Optional destination filename.' ),
+			'title'    => array( 'type' => 'string' ),
+			'alt'      => array( 'type' => 'string' ),
+			'caption'  => array( 'type' => 'string' ),
+			'post_id'  => array( 'type' => 'integer', 'description' => 'Optional post ID to attach the media to.' ),
+		) ),
+		'callback'    => 'wsp_execute_upload_media',
+		'capability'  => 'upload_files',
+		'enable_key'  => 'wsp/upload-media',
+	) );
+	WSP_MCP_Server::register_tool( 'wsp_upload_media_from_url', array(
+		'description' => 'Pull an image from any web link straight into your media library.',
+		'inputSchema' => array( 'type' => 'object', 'required' => array( 'url' ), 'properties' => array(
+			'url'      => array( 'type' => 'string', 'description' => 'Source URL of the image to import.' ),
+			'filename' => array( 'type' => 'string', 'description' => 'Optional destination filename.' ),
+			'title'    => array( 'type' => 'string' ),
+			'alt'      => array( 'type' => 'string' ),
+			'caption'  => array( 'type' => 'string' ),
+			'post_id'  => array( 'type' => 'integer', 'description' => 'Optional post ID to attach the media to.' ),
+		) ),
+		'callback'    => 'wsp_execute_upload_media_from_url',
+		'capability'  => 'upload_files',
+		'enable_key'  => 'wsp/upload-media-from-url',
+	) );
+
+	// ---- Users / Search / Site ----
 	WSP_MCP_Server::register_tool( 'wsp_get_users', array(
 		'description' => 'Lists registered users.',
 		'inputSchema' => $obj,

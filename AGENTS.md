@@ -31,7 +31,7 @@ These three files give you complete project understanding without touching the c
 ## What this plugin is
 
 **Plugin Name:** WSP MCP - AI Agents Connector  
-**Version:** 2.4.1  
+**Version:** 2.5.0  
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
 **Constant prefix:** `WSP_MCP_`
@@ -244,9 +244,17 @@ admin toggle for each is driven by its entry in `wsp_mcp_ability_registry()` (`r
 
 | Ability key | Label | Access | Default | Permission | Inputs |
 |---|---|---|---|---|---|
-| `wsp/get-media` | Get Media | read | OFF | `upload_files` | `per_page`, `type` (MIME e.g. `image`) |
+| `wsp/list-media` | List Media | read | OFF | `upload_files` | `per_page`, `page`, `type` (MIME e.g. `image`), `search`, `year`, `month` |
+| `wsp/get-media` | Get Media | read | OFF | `upload_files` | `id` (req) — returns full metadata for one attachment |
+| `wsp/count-media` | Count Media | read | OFF | `upload_files` | — (counts grouped by MIME type + total) |
+| `wsp/update-media` | Update Media | write | OFF | `upload_files` | `id` (req), `title`, `alt`, `caption`, `description` |
+| `wsp/delete-media` | Delete Media | write | OFF | `delete_posts` | `id` (req) — permanent `wp_delete_attachment()` |
+| `wsp/upload-media` | Upload Media | write | OFF | `upload_files` | `url` (req), `filename`, `title`, `alt`, `caption`, `post_id` |
+| `wsp/upload-media-from-url` | Upload Media From URL | write | OFF | `upload_files` | `url` (req), `filename`, `title`, `alt`, `caption`, `post_id` |
 
-- Read-only. No upload ability exists.
+- `wsp/get-media` returns the full metadata of a **single** attachment by ID (browse/search moved to `wsp/list-media`).
+- Uploads sideload via `download_url()` + `media_handle_sideload()` (requires `wp-admin/includes/{file,media,image}.php`, loaded inside the callback). `wsp_execute_upload_media()` is a thin wrapper over `wsp_execute_upload_media_from_url()`.
+- `wsp_media_item_data()` is the shared normalizer used by get/update/upload responses.
 
 #### Users (`users.php`)
 

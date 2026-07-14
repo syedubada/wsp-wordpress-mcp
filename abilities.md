@@ -10,7 +10,7 @@ The list mirrors the plugin registry at
 
 > **Generated file — do not edit by hand.** Produced by `bin/generate-abilities-md.php`; CI regenerates it whenever `registry.php` changes.
 
-**When this file changes, update the `ABILITIES` array in `abilities-directory.html` to match** (and bump the `lastmod` date for that page in `sitemap.xml`).
+**When this file changes, `abilities-directory.html` and `sitemap.xml` are updated automatically by the sync workflow.**
 
 ## Legend
 

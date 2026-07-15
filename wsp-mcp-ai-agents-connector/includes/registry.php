@@ -78,7 +78,7 @@ function wsp_mcp_ability_registry() {
         );
     }
 
-    if ( class_exists( '\Elementor\Plugin' ) ) {
+    if ( wsp_elementor_is_active() ) {
         $abilities += array(
             // ELEMENTOR
             'wsp/elementor-list-pages'     => array( 'label' => 'List Elementor Pages',  'description' => 'List pages/posts built with Elementor (title, ID, URL, status).',          'group' => 'Elementor', 'access' => 'read',  'default' => false ),

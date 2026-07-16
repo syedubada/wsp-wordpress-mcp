@@ -183,6 +183,7 @@ function wsp_mcp_settings_page() {
         'Site'                   => '🌐',
         'Elementor'              => '⚡',
         'Yoast SEO'              => '🔎',
+        'Rank Math SEO'          => '🎯',
         'WooCommerce'            => '🛍️',
         'Advanced Custom Fields' => '🧩',
     );

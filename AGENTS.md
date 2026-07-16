@@ -31,7 +31,7 @@ These three files give you complete project understanding without touching the c
 ## What this plugin is
 
 **Plugin Name:** WSP MCP - AI Agents Connector  
-**Version:** 2.5.0  
+**Version:** 2.6.0  
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
 **Constant prefix:** `WSP_MCP_`
@@ -187,7 +187,7 @@ wsp-wordpress-mcp/                        ← repo root (NOT the plugin — dev 
 
 | Constant | Value |
 |---|---|
-| `WSP_MCP_VERSION` | `'2.3.1'` |
+| `WSP_MCP_VERSION` | `'2.6.0'` |
 | `WSP_MCP_OPTION` | `'wsp_mcp_abilities'` (per-ability on/off toggles) |
 | `WSP_MCP_DIR` | `plugin_dir_path(__FILE__)` |
 
@@ -469,6 +469,17 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
 > removed — don't reintroduce it without a durable deletion mechanism.
 
 ---
+
+
+#### Ultimate Addons for Elementor (`uae.php`)
+
+Only registered if `wsp_uae_is_active()`. Adds 45 tools to manipulate UAE widgets, templates (Header/Footer/Blocks), settings, and display rules. 
+- **Key Prefix:** `wsp/uae-*`
+- **MCP Tool Prefix:** `wsp_uae_*`
+- **Capabilities:** Mostly `edit_posts` (reads/basic updates), `publish_posts` (creates), and `manage_options` (global widgets/settings).
+
+
+
 
 ## Admin UI
 

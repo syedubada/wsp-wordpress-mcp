@@ -897,6 +897,78 @@ function wsp_mcp_register_native_tools() {
 		) );
 	}
 
+
+	// ---- Ultimate Addons for Elementor ----
+	if ( function_exists( 'wsp_uae_is_active' ) && wsp_uae_is_active() ) {
+		$uae_tools = array(
+			'widgets_activate' => array('cap'=>'manage_options', 'schema'=>array('required'=>array('widget_slug'),'properties'=>array('widget_slug'=>array('type'=>'string','description'=>'Widget slug to activate')))),
+			'widgets_deactivate' => array('cap'=>'manage_options', 'schema'=>array('required'=>array('widget_slug'),'properties'=>array('widget_slug'=>array('type'=>'string','description'=>'Widget slug to deactivate')))),
+			'widgets_list' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'widgets_bulk_toggle' => array('cap'=>'manage_options', 'schema'=>array('properties'=>array('disable_all'=>array('type'=>'boolean','description'=>'True to disable all, false to enable all')))),
+			'widgets_deactivate_unused' => array('cap'=>'manage_options', 'schema'=>array()),
+			'widgets_get_usage' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'templates_list' => array('cap'=>'edit_posts', 'schema'=>array('properties'=>array('type'=>array('type'=>'string'),'per_page'=>array('type'=>'integer')))),
+			'templates_create' => array('cap'=>'publish_posts', 'schema'=>array('required'=>array('title'),'properties'=>array('title'=>array('type'=>'string'),'type'=>array('type'=>'string')))),
+			'templates_delete' => array('cap'=>'delete_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'templates_duplicate' => array('cap'=>'publish_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'active_get' => array('cap'=>'edit_posts', 'schema'=>array('properties'=>array('type'=>array('type'=>'string'),'per_page'=>array('type'=>'integer')))),
+			'templates_get' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'templates_update' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer'),'title'=>array('type'=>'string')))),
+			'templates_restore' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'shortcode_render' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('shortcode'),'properties'=>array('shortcode'=>array('type'=>'string')))),
+			'pages_list' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'pages_create' => array('cap'=>'publish_posts', 'schema'=>array('required'=>array('title'),'properties'=>array('title'=>array('type'=>'string'),'content'=>array('type'=>'string')))),
+			'pages_delete' => array('cap'=>'delete_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'pages_restore' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id'),'properties'=>array('id'=>array('type'=>'integer')))),
+			'pages_update_meta' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id','meta_key','meta_value'),'properties'=>array('id'=>array('type'=>'integer'),'meta_key'=>array('type'=>'string'),'meta_value'=>array('type'=>'string')))),
+			'pages_update_status' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('id','status'),'properties'=>array('id'=>array('type'=>'integer'),'status'=>array('type'=>'string')))),
+			'builder_get_structure' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id'),'properties'=>array('post_id'=>array('type'=>'integer')))),
+			'builder_add_section' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id'),'properties'=>array('post_id'=>array('type'=>'integer')))),
+			'builder_insert_widget' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id','widget_type'),'properties'=>array('post_id'=>array('type'=>'integer'),'widget_type'=>array('type'=>'string')))),
+			'builder_update_widget' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id','element_id','settings'),'properties'=>array('post_id'=>array('type'=>'integer'),'element_id'=>array('type'=>'string'),'settings'=>array('type'=>'object')))),
+			'builder_remove_element' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id','element_id'),'properties'=>array('post_id'=>array('type'=>'integer'),'element_id'=>array('type'=>'string')))),
+			'builder_move_element' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id','element_id','position'),'properties'=>array('post_id'=>array('type'=>'integer'),'element_id'=>array('type'=>'string'),'position'=>array('type'=>'integer')))),
+			'builder_add_column' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id'),'properties'=>array('post_id'=>array('type'=>'integer'),'parent_id'=>array('type'=>'string')))),
+			'builder_build' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('post_id','json_tree'),'properties'=>array('post_id'=>array('type'=>'integer'),'json_tree'=>array('type'=>'string')))),
+			'builder_regenerate_css' => array('cap'=>'manage_options', 'schema'=>array()),
+			'maintenance_clear_cache' => array('cap'=>'manage_options', 'schema'=>array()),
+			'builder_undo' => array('cap'=>'edit_posts', 'schema'=>array('properties'=>array('post_id'=>array('type'=>'integer','description'=>'Post ID to revert changes for.')))),
+			'builder_get_schema' => array('cap'=>'edit_posts', 'schema'=>array('properties'=>array('widget_type'=>array('type'=>'string','description'=>'Elementor widget slug (e.g. heading, hfe-page-title).')))),
+			'builder_list_widget_types' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'settings_get' => array('cap'=>'manage_options', 'schema'=>array()),
+			'settings_update' => array('cap'=>'manage_options', 'schema'=>array('required'=>array('settings'),'properties'=>array('settings'=>array('type'=>'string')))),
+			'info_get' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'pro_features' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'extensions_list' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'extensions_toggle' => array('cap'=>'manage_options', 'schema'=>array('required'=>array('extension','status'),'properties'=>array('extension'=>array('type'=>'string'),'status'=>array('type'=>'boolean')))),
+			'theme_get_info' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'theme_set_method' => array('cap'=>'manage_options', 'schema'=>array('required'=>array('method'),'properties'=>array('method'=>array('type'=>'string')))),
+			'design_system_get_tokens' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'display_rules_get_locations' => array('cap'=>'edit_posts', 'schema'=>array()),
+			'display_rules_update' => array('cap'=>'edit_posts', 'schema'=>array('required'=>array('template_id','rule'),'properties'=>array('template_id'=>array('type'=>'integer'),'rule'=>array('type'=>'string')))),
+		);
+
+		foreach ($uae_tools as $slug => $config) {
+			if (empty($config['schema'])) {
+				$schema = $obj;
+			} else {
+				$schema = array('type'=>'object');
+				if (isset($config['schema']['required'])) {
+					$schema['required'] = $config['schema']['required'];
+				}
+				$schema['properties'] = isset($config['schema']['properties']) ? $config['schema']['properties'] : new stdClass();
+			}
+			$key = 'uae-' . str_replace('_', '-', $slug);
+			WSP_MCP_Server::register_tool( 'wsp_uae_' . $slug, array(
+				'description' => 'UAE Tool: ' . str_replace('_', ' ', $slug),
+				'inputSchema' => $schema,
+				'callback'    => 'wsp_execute_uae_' . $slug,
+				'capability'  => $config['cap'],
+				'enable_key'  => 'wsp/' . $key,
+			) );
+		}
+	}
+
 	/**
 	 * Allow add-ons to register additional native MCP tools.
 	 *

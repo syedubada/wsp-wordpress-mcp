@@ -372,7 +372,7 @@ function wsp_execute_elementor_add_container( $input ) {
     $position  = isset( $input['position'] ) ? intval( $input['position'] ) : null;
 
     // Normalise type — only container (modern) and section (legacy) are valid root types.
-    if ( ! in_array( $type, array( 'container', 'section' ), true ) ) {
+	if ( ! in_array( $type, array( 'container', 'section', 'column' ), true ) ) {
         $type = 'container';
     }
 

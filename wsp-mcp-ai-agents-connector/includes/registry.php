@@ -11,6 +11,22 @@ if ( ! function_exists( 'wsp_acf_is_active' ) ) {
     }
 }
 
+
+/**
+ * Helper to check if Ultimate Addons for Elementor is active.
+ * Defined here defensively in case registry.php loads before uae.php.
+ */
+if ( ! function_exists( 'wsp_uae_is_active' ) ) {
+    function wsp_uae_is_active() {
+        return defined( 'UAEL_FILE' )
+            || defined( 'UAEL_VER' )
+            || defined( 'UAE_VER' )
+            || class_exists( '\Elementor\Plugin' )
+            || class_exists( 'UAEL_Loader' );
+    }
+}
+
+
 function wsp_mcp_ability_registry() {
     $abilities = array(
         // POSTS
@@ -134,8 +150,60 @@ function wsp_mcp_ability_registry() {
         );
     }
 
+    if ( wsp_uae_is_active() ) {
+        $u_g = 'Ultimate Addons Elementor';
+        $abilities += array(
+            'wsp/uae-widgets-activate'         => array('label'=>'Activate Widget', 'description'=>'Enables a specific UAE widget.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-add-column'       => array('label'=>'Add Column to Section', 'description'=>'Adds a new column to Elementor post.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-add-section'      => array('label'=>'Add Section/Container', 'description'=>'Adds a structural layout element.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-build'            => array('label'=>'Build Complete Layout', 'description'=>'Builds layout from JSON.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-widgets-bulk-toggle'      => array('label'=>'Bulk Toggle All Widgets', 'description'=>'Activates/deactivates every widget.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-maintenance-clear-cache'  => array('label'=>'Clear Elementor Cache', 'description'=>'Clears CSS cache globally.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-pages-create'             => array('label'=>'Create Page', 'description'=>'Creates an Elementor page.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-templates-create'         => array('label'=>'Create Template', 'description'=>'Creates UAE template.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-widgets-deactivate-unused'=> array('label'=>'Deactivate Unused Widgets', 'description'=>'Scans and disables unused widgets.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-widgets-deactivate'       => array('label'=>'Deactivate Widget', 'description'=>'Disables specific UAE widget.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-pages-delete'             => array('label'=>'Delete Page', 'description'=>'Trashes an Elementor page.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-templates-delete'         => array('label'=>'Delete Template', 'description'=>'Trashes a UAE template.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-templates-duplicate'      => array('label'=>'Duplicate Template', 'description'=>'Duplicates a template.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-active-get'               => array('label'=>'Get All Active Templates', 'description'=>'Returns active templates.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-display-rules-get-locations'=> array('label'=>'Get Available Locations', 'description'=>'Lists display rule locations.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-design-system-get-tokens' => array('label'=>'Get Design Tokens', 'description'=>'Returns global colors/fonts.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-builder-get-schema'       => array('label'=>'Get Element Schema', 'description'=>'Returns widget setting schema.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-info-get'                 => array('label'=>'Get Plugin Info', 'description'=>'Returns UAE info.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-settings-get'             => array('label'=>'Get Plugin Settings', 'description'=>'Gets plugin level settings.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-builder-get-structure'    => array('label'=>'Get Post Structure', 'description'=>'Returns Elementor tree.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-templates-get'            => array('label'=>'Get Template Details', 'description'=>'Returns full details of template.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-theme-get-info'           => array('label'=>'Get Theme Info', 'description'=>'Returns theme compatibility.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-widgets-get-usage'        => array('label'=>'Get Widget Usage Map', 'description'=>'Returns site-wide usage counts.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-builder-insert-widget'    => array('label'=>'Insert Widget', 'description'=>'Inserts new widget.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-list-widget-types'=> array('label'=>'List Available Widget Types', 'description'=>'Lists Elementor widgets.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-extensions-list'          => array('label'=>'List Extensions', 'description'=>'Lists UAE extensions.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-pages-list'               => array('label'=>'List Pages', 'description'=>'Lists Elementor pages.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-templates-list'           => array('label'=>'List Templates', 'description'=>'Lists UAE templates.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-widgets-list'             => array('label'=>'List Widgets', 'description'=>'Lists UAE widgets.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-builder-move-element'     => array('label'=>'Move Element', 'description'=>'Repositions an element.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-regenerate-css'   => array('label'=>'Regenerate CSS', 'description'=>'Forces frontend CSS regen.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-remove-element'   => array('label'=>'Remove Element', 'description'=>'Removes a widget/container.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-shortcode-render'         => array('label'=>'Render Template Shortcode', 'description'=>'Renders shortcode.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-pages-restore'            => array('label'=>'Restore Page', 'description'=>'Restores page from trash.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-templates-restore'        => array('label'=>'Restore Template from Trash', 'description'=>'Restores template from trash.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-theme-set-method'         => array('label'=>'Set Theme Compatibility Method', 'description'=>'Configures fallback method.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-extensions-toggle'        => array('label'=>'Toggle Extension', 'description'=>'Enables/disables extension.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-pro-features'             => array('label'=>'UAE Pro Features Info', 'description'=>'Gets Pro upgrade info.', 'group'=>$u_g, 'access'=>'read', 'default'=>false),
+            'wsp/uae-builder-undo'             => array('label'=>'Undo Last Builder Change', 'description'=>'Reverts recent change.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-display-rules-update'     => array('label'=>'Update Display Rules', 'description'=>'Sets include/exclude locations.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-pages-update-meta'        => array('label'=>'Update Page Meta', 'description'=>'Updates page meta.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-pages-update-status'      => array('label'=>'Update Page Status', 'description'=>'Publishes/unpublishes page.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-settings-update'          => array('label'=>'Update Plugin Setting', 'description'=>'Updates plugin setting.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-templates-update'         => array('label'=>'Update Template', 'description'=>'Updates template type/status.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+            'wsp/uae-builder-update-widget'    => array('label'=>'Update Widget Settings', 'description'=>'Updates widget keys.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+        );
+    }
+
     return $abilities;
 }
+
 
 function wsp_mcp_get_settings() {
     $saved    = get_option( WSP_MCP_OPTION, array() );

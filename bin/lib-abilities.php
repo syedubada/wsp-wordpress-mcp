@@ -21,6 +21,7 @@ if ( ! function_exists( 'wsp_yoast_is_active' ) )     { function wsp_yoast_is_ac
 if ( ! function_exists( 'wsp_rankmath_is_active' ) )  { function wsp_rankmath_is_active()  { return true; } }
 if ( ! function_exists( 'wsp_elementor_is_active' ) ) { function wsp_elementor_is_active() { return true; } }
 if ( ! function_exists( 'wsp_acf_is_active' ) )       { function wsp_acf_is_active()       { return true; } }
+if ( ! function_exists( 'wsp_uae_is_active' ) )       { function wsp_uae_is_active()       { return true; } }
 if ( ! class_exists( 'WooCommerce' ) )                { class WooCommerce {} }
 
 require __DIR__ . '/../wsp-mcp-ai-agents-connector/includes/registry.php';
@@ -47,6 +48,7 @@ function wsp_abilities_plugin_sections() {
 		'Rank Math SEO'          => 'requires the Rank Math SEO plugin',
 		'WooCommerce'            => 'requires the WooCommerce plugin',
 		'Elementor'              => 'requires the Elementor plugin',
+		'Ultimate Addons Elementor' => 'requires the Ultimate Addons for Elementor plugin',
 		'Advanced Custom Fields' => 'requires the ACF plugin',
 	);
 }

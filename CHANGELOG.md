@@ -8,6 +8,23 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.6.0] — 2026-07-20
+
+### Added — Ultimate Addons for Elementor (UAE) suite (`includes/abilities/uae.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- **45 new tools** for the Ultimate Addons for Elementor integration, all OFF by default and toggled from **MCP > Settings** under the "Ultimate Addons Elementor" group:
+  - **Widgets:** activate, deactivate, bulk toggle, check usage, and list UAE widgets.
+  - **Templates:** create, duplicate, trash, restore, and update Header / Footer / Blocks templates.
+  - **Builder / Engine:** manipulate Elementor structures — add sections, add columns, move elements, and build layouts from JSON.
+  - **Settings:** get/update UAE plugin settings, theme info, extensions, and design-system tokens.
+
+### Fixed
+- `wsp_uae_builder_add_column` silently created a `container` instead of a `column`. The type validation in `wsp_execute_elementor_add_container()` (`includes/abilities/elementor.php`) only accepted `container` and `section`, so the `column` type set by the UAE wrapper was always overridden. Added `column` to the valid-type list.
+
+### Security
+- All string inputs sanitized with `wp_kses_post()`; strict per-tool capability checks (`edit_posts`, `publish_posts`, `manage_options`).
+
+---
+
 ## [2.5.0] — 2026-07-14
 
 ### Added — Media library tool suite (`includes/abilities/media.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
@@ -270,19 +287,3 @@ Initial release. Registers WordPress content as MCP abilities via the WordPress 
 - Admin toggle UI (MCP > Settings) — per-ability on/off switches with write-action confirmation dialogs.
 - Central ability registry (`wsp_mcp_ability_registry()`) driving both admin UI and ability registration.
 - Dual-mode transport guard: `function_exists('wp_register_ability')` so the plugin degrades gracefully when the Abilities API is absent.
-
-
-
-## [2.6.0] — 2026-07-20
-
-### Added — Ultimate Addons for Elementor Suite (`includes/abilities/uae.php`)
-- **45 New Tools** for UAE integration:
-  - **Widgets:** Activate, deactivate, toggle bulk, check usage, list widgets.
-  - **Templates:** Create, duplicate, trash, restore, and update Header/Footer/Blocks templates.
-  - **Builder/Engine:** Manipulate Elementor structures (add sections, columns, move elements, build layouts via JSON).
-  - **Settings:** Get and update UAE plugin settings, theme info, extensions, and design system tokens.
-- All tools are OFF by default, safely toggleable via **MCP > Settings** under the "Ultimate Addons Elementor" group.
-- Fully adheres to core security: strings sanitized with `wp_kses_post()`, strict capability checks (`edit_posts`, `publish_posts`, `manage_options`).
-
-### Fixed
-- `wsp_uae_builder_add_column` silently created a `container` instead of a `column`: the type validation in `wsp_execute_elementor_add_container()` (`includes/abilities/elementor.php`) only accepted `container` and `section`, so the `column` type set by the UAE wrapper was always overridden. Added `column` to the valid-type list.

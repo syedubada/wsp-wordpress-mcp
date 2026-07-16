@@ -4,7 +4,7 @@ Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.9
 Tested up to: 7.0.1
 Requires PHP: 7.4
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Expose your WordPress site to AI agents (Claude, Cursor, and other MCP clients) 
 
 WSP MCP - AI Agents Connector turns your WordPress site into a Model Context Protocol (MCP) server. AI clients can read and edit posts, pages, categories, tags, media, comments, users, and (when installed) Yoast SEO meta and Elementor page content — all under granular, per-ability admin control.
  
-The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, and Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active.
+The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active, and Ultimate Addons for Elementor (UAE) tools (widgets, templates, layout building, and settings) when UAE is active.
  
 Built and maintained by the [WebSensePro](https://websensepro.com/) team. For documentation, setup guides, and connection help, visit the plugin home at [freewordpressmcp.com](https://freewordpressmcp.com/).
  
@@ -78,7 +78,15 @@ Every tool is individually toggleable in **MCP > Settings**, and all write tools
 * Custom post types — manage
 * Taxonomies — manage
 * Options pages — manage
- 
+
+**Ultimate Addons for Elementor** (requires UAE — structural and settings writes require `edit_posts`, `publish_posts`, or `manage_options`)
+
+* Widgets — list, check usage, activate, deactivate, bulk toggle
+* Templates — list, get, create, duplicate, update, trash, restore Header/Footer/Blocks templates
+* Layout building — add sections, add columns, move elements, build layouts from JSON
+* Settings — get/update UAE settings, theme info, extensions, and design-system tokens
+* All 45 tools are off by default; string inputs are sanitized with `wp_kses_post()`
+
 = Links =
  
 * Plugin home & docs: [freewordpressmcp.com](https://freewordpressmcp.com/)
@@ -106,6 +114,11 @@ Use a WordPress Application Password (sent via HTTP Basic auth) or the plugin-ge
 Any client that supports the Streamable HTTP MCP transport — Claude Desktop, MCP Inspector, IDEs, and scripts.
 
 == Changelog ==
+
+= 2.6.0 =
+* New: Ultimate Addons for Elementor (UAE) tool suite — 45 tools covering widgets (list, check usage, activate, deactivate, bulk toggle), templates (list, get, create, duplicate, update, trash, restore Header/Footer/Blocks templates), layout building (add sections, add columns, move elements, build from JSON), and settings (UAE settings, theme info, extensions, design-system tokens). All off by default and only registered when UAE is active.
+* Fixed: adding an Elementor column no longer creates a container instead — the type validation in the add-container handler now accepts the `column` type.
+* Security: all UAE string inputs are sanitized with `wp_kses_post()`; each tool enforces a strict capability check (`edit_posts`, `publish_posts`, or `manage_options`).
 
 = 2.5.0 =
 * New: Full media library tool suite. Adds six media tools — List Media (browse/search by type, keyword, or date), Count Media (counts grouped by MIME type plus a total), Update Media (title, alt text, caption, description), Delete Media (permanent), Upload Media (from a URL), and Upload Media From URL — and repurposes Get Media to return the full metadata of a single attachment by ID. Every tool is off by default and toggled from MCP > Settings.

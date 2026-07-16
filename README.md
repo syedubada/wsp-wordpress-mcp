@@ -2,7 +2,7 @@
 
 > **By [WebSensePro](https://websensepro.com) — Official Shopify Partner & WordPress Agency**
 
-[![Version](https://img.shields.io/badge/Version-2.5.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
+[![Version](https://img.shields.io/badge/Version-2.6.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
 [![YouTube](https://img.shields.io/badge/YouTube-140K%2B%20Subscribers-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/websensepro)
 [![License](https://img.shields.io/badge/License-GPL%202.0-green?style=for-the-badge)](LICENSE)
 
@@ -13,6 +13,11 @@
 [![WSP WordPress MCP — Full Tutorial](https://img.youtube.com/vi/1hGSUAdRxiU/maxresdefault.jpg)](https://youtu.be/1hGSUAdRxiU)
 
 ---
+
+## ✨ What's New in v2.6.0
+
+- 🧱 **Ultimate Addons for Elementor (UAE) Suite** — 45 new tools for UAE, all off by default and toggled from **MCP > Settings** under the "Ultimate Addons Elementor" group. Covers **widgets** (activate, deactivate, bulk toggle, check usage, list), **templates** (create, duplicate, trash, restore, and update Header/Footer/Blocks templates), the **builder/engine** (add sections, add columns, move elements, build layouts from JSON), and **settings** (get/update UAE plugin settings, theme info, extensions, and design-system tokens). String inputs are sanitized with `wp_kses_post()` and every tool enforces a strict capability check (`edit_posts`, `publish_posts`, or `manage_options`). Only registered when UAE is active.
+- 🐛 **Fixed `wsp_uae_builder_add_column`** — it silently created a `container` instead of a `column` because the type validation in `wsp_execute_elementor_add_container()` only accepted `container` and `section`. `column` is now a valid type.
 
 ## ✨ What's New in v2.5.0
 
@@ -128,6 +133,21 @@
 | Get / Update Option Value | read / write |
 
 > Value reads/writes accept a target of a post/page ID, `user_<id>`, `term_<id>`, or `options`, and enforce per-object capabilities (e.g. `edit_post`, `edit_user`, `manage_categories`, `manage_options`). Structural changes require `manage_options`.
+
+### Ultimate Addons for Elementor *(requires UAE plugin)*
+| Ability | Access |
+|---------|--------|
+| List UAE Widgets / Check Widget Usage | read |
+| Activate / Deactivate / Bulk Toggle Widgets | write |
+| List / Get Header, Footer & Blocks Templates | read |
+| Create / Duplicate / Update Template | write |
+| Trash / Restore Template | write |
+| Add Section / Add Column / Move Element | write |
+| Build Layout from JSON | write |
+| Get UAE Settings / Theme Info / Extensions / Design Tokens | read |
+| Update UAE Settings / Design Tokens | write |
+
+> 45 tools in total, off by default and only registered when UAE is active. Structural and settings writes require `edit_posts`, `publish_posts`, or `manage_options`; all string inputs are sanitized with `wp_kses_post()`.
 
 ---
 

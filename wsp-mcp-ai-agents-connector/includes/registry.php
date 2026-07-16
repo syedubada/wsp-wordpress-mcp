@@ -57,6 +57,14 @@ function wsp_mcp_ability_registry() {
         );
     }
 
+    if ( wsp_rankmath_is_active() ) {
+        $abilities += array(
+            // RANK MATH SEO
+            'wsp/rankmath-get-seo'    => array( 'label' => 'Get Rank Math SEO Meta',    'description' => 'Get Rank Math SEO title, meta description, focus keyword, and SEO score for a post or page.', 'group' => 'Rank Math SEO', 'access' => 'read',  'default' => false ),
+            'wsp/rankmath-update-seo' => array( 'label' => 'Update Rank Math SEO Meta', 'description' => 'Update Rank Math SEO title, meta description, and/or focus keyword for a post or page.', 'group' => 'Rank Math SEO', 'access' => 'write', 'default' => false ),
+        );
+    }
+
     if ( class_exists( 'WooCommerce' ) ) {
         $abilities += array(
             // WOOCOMMERCE

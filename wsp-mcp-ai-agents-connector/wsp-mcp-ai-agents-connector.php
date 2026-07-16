@@ -36,6 +36,7 @@ require_once WSP_MCP_DIR . 'includes/abilities/users.php';
 require_once WSP_MCP_DIR . 'includes/abilities/search.php';
 require_once WSP_MCP_DIR . 'includes/abilities/site.php';
 require_once WSP_MCP_DIR . 'includes/abilities/yoast.php';
+require_once WSP_MCP_DIR . 'includes/abilities/rankmath.php';
 require_once WSP_MCP_DIR . 'includes/abilities/elementor.php';
 require_once WSP_MCP_DIR . 'includes/abilities/woocommerce.php';
 require_once WSP_MCP_DIR . 'includes/abilities/acf.php'; // Included ACF Pro Abilities

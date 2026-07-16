@@ -319,6 +319,31 @@ function wsp_mcp_register_native_tools() {
 		) );
 	}
 
+	// ---- Rank Math SEO (only when Rank Math is active) ----
+	if ( function_exists( 'wsp_rankmath_is_active' ) && wsp_rankmath_is_active() ) {
+		WSP_MCP_Server::register_tool( 'wsp_rankmath_get_seo', array(
+			'description' => 'Get Rank Math SEO title, meta description, focus keyword, and SEO score for a post or page.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer' ),
+			) ),
+			'callback'    => 'wsp_execute_rankmath_get_seo',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/rankmath-get-seo',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_rankmath_update_seo', array(
+			'description' => 'Update Rank Math SEO title, meta description, and/or focus keyword for a post or page. Focus keyword accepts multiple comma-separated keywords (first one is the primary). Pass an empty string to clear a field back to the global template.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'               => array( 'type' => 'integer' ),
+				'seo_title'        => array( 'type' => 'string' ),
+				'meta_description' => array( 'type' => 'string' ),
+				'focus_keyword'    => array( 'type' => 'string' ),
+			) ),
+			'callback'    => 'wsp_execute_rankmath_update_seo',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/rankmath-update-seo',
+		) );
+	}
+
 	// ---- WooCommerce (only when WooCommerce is active) ----
 	if ( class_exists( 'WooCommerce' ) ) {
 		WSP_MCP_Server::register_tool( 'wsp_woo_get_products', array(

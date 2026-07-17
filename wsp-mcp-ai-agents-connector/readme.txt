@@ -4,7 +4,7 @@ Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.9
 Tested up to: 7.0.1
 Requires PHP: 7.4
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,7 +17,11 @@ WSP MCP - AI Agents Connector turns your WordPress site into a Model Context Pro
 The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active, and Ultimate Addons for Elementor (UAE) tools (widgets, templates, layout building, and settings) when UAE is active.
  
 Built and maintained by the [WebSensePro](https://websensepro.com/) team. For documentation, setup guides, and connection help, visit the plugin home at [freewordpressmcp.com](https://freewordpressmcp.com/).
- 
+
+= Video tutorial =
+
+https://youtu.be/1hGSUAdRxiU
+
 = Key features =
  
 * Built-in MCP server over a single REST endpoint (Streamable HTTP, JSON-RPC 2.0) — no external dependency.
@@ -113,7 +117,28 @@ Use a WordPress Application Password (sent via HTTP Basic auth) or the plugin-ge
 
 Any client that supports the Streamable HTTP MCP transport — Claude Desktop, MCP Inspector, IDEs, and scripts.
 
+= How do I connect WordPress with OpenClaw? =
+
+Watch the step-by-step video tutorial:
+
+https://youtu.be/GLyLzxVOxm4
+
+= How do I connect WordPress with Google Antigravity 2.0? =
+
+Watch the step-by-step video tutorial:
+
+https://youtu.be/2gRIRcqqOpo
+
+= How do I connect WordPress with Codex? =
+
+Watch the step-by-step video tutorial:
+
+https://youtu.be/hxhjs3IUYQE
+
 == Changelog ==
+
+= 2.6.1 =
+* Docs: added a video tutorial to the plugin description and three connection walkthrough videos (OpenClaw, Google Antigravity 2.0, Codex) to the FAQ.
 
 = 2.6.0 =
 * New: Ultimate Addons for Elementor (UAE) tool suite — 45 tools covering widgets (list, check usage, activate, deactivate, bulk toggle), templates (list, get, create, duplicate, update, trash, restore Header/Footer/Blocks templates), layout building (add sections, add columns, move elements, build from JSON), and settings (UAE settings, theme info, extensions, design-system tokens). All off by default and only registered when UAE is active.

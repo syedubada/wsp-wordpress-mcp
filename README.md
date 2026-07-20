@@ -14,9 +14,13 @@
 
 ---
 
+## ✨ What's New in v2.6.2
+
+- 📬 **Gravity Forms Suite (18 tools)** — full read/write control over Gravity Forms, with **List Forms** and **Get Form** ON by default and all write tools OFF. Toggled from **MCP > Settings** under the "Gravity Forms" group (icon: 📋). Covers **forms** (list, get, create, update, delete, update settings), **entries** (list, get, update, delete with trash/permanent support), **notifications** (get, create, update, delete), and **confirmations** (get, create, update, delete — message/redirect/page types). All callbacks use `GFAPI` and enforce strict Gravity Forms capability checks (`gravityforms_edit_forms`, `gravityforms_create_form`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`). Only registered when Gravity Forms is active.
+
 ## ✨ What's New in v2.6.1
 
-- 📬 **Gravity Forms Suite** — 11 new tools for Gravity Forms, with List Forms and Get Form ON by default and all write tools OFF. Toggled from **MCP > Settings** under the "Gravity Forms" group. Covers **forms** (list, get, create, update, delete), **entries** (list, get, update, delete with trash/permanent support), and **settings** (get notifications and confirmations for a form). All callbacks use `GFAPI` and enforce strict Gravity Forms capability checks (`gravityforms_edit_forms`, `gravityforms_create_forms`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`). Only registered when Gravity Forms is active.
+- 📬 **Gravity Forms Suite** — introduced the 18-tool Gravity Forms integration, with List Forms and Get Form ON by default and all write tools OFF. Toggled from **MCP > Settings** under the "Gravity Forms" group. Covers **forms**, **entries**, **notifications**, and **confirmations**. All callbacks use `GFAPI` and enforce strict Gravity Forms capability checks (`gravityforms_edit_forms`, `gravityforms_create_form`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`). Only registered when Gravity Forms is active.
 
 ## ✨ What's New in v2.6.0
 
@@ -158,11 +162,15 @@
 |---------|--------|
 | List / Get Forms | read |
 | Create / Update / Delete Form | write |
+| Update Form Settings | write |
 | List / Get Entries | read |
 | Update / Delete Entry | write |
-| Get Notifications / Confirmations | read |
+| Get Notifications | read |
+| Create / Update / Delete Notification | write |
+| Get Confirmations | read |
+| Create / Update / Delete Confirmation | write |
 
-> 11 tools in total. List Forms and Get Form are ON by default; all write tools are OFF by default. All callbacks require appropriate Gravity Forms capabilities (`gravityforms_edit_forms`, `gravityforms_create_forms`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`).
+> 18 tools in total. List Forms and Get Form are ON by default; all write tools are OFF by default. All callbacks require appropriate Gravity Forms capabilities (`gravityforms_edit_forms`, `gravityforms_create_form`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`).
 
 ---
 

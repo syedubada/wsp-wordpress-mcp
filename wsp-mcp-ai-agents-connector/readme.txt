@@ -4,7 +4,7 @@ Tags: mcp, ai, claude, model context protocol, woocommerce
 Requires at least: 6.9
 Tested up to: 7.0.1
 Requires PHP: 7.4
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Expose your WordPress site to AI agents (Claude, Cursor, and other MCP clients) 
 
 WSP MCP - AI Agents Connector turns your WordPress site into a Model Context Protocol (MCP) server. AI clients can read and edit posts, pages, categories, tags, media, comments, users, and (when installed) Yoast SEO meta and Elementor page content — all under granular, per-ability admin control.
  
-The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active, and Ultimate Addons for Elementor (UAE) tools (widgets, templates, layout building, and settings) when UAE is active.
+The plugin ships its **own native MCP server**. You do not need the WordPress MCP Adapter or any companion plugin: activate, copy your connection details from **MCP > Connection**, and connect. WooCommerce tools (products, orders, refunds, coupons, customers, reports) are available when WooCommerce is active, Advanced Custom Fields tools (field groups, fields, values, post types, taxonomies, options pages) when ACF is active, Ultimate Addons for Elementor (UAE) tools (widgets, templates, layout building, and settings) when UAE is active, and Gravity Forms tools (forms, entries, notifications, and confirmations) when Gravity Forms is active.
  
 Built and maintained by the [WebSensePro](https://websensepro.com/) team. For documentation, setup guides, and connection help, visit the plugin home at [freewordpressmcp.com](https://freewordpressmcp.com/).
 
@@ -144,6 +144,9 @@ Watch the step-by-step video tutorial:
 https://youtu.be/hxhjs3IUYQE
 
 == Changelog ==
+
+= 2.6.2 =
+* Docs: documented the complete 18-tool Gravity Forms suite (forms, entries, notifications, confirmations) across the readme, plugin docs, and changelog; the 2.6.1 notes under-reported it as 11 tools and omitted the notification, confirmation, and form-settings write tools. Corrected the capability name to `gravityforms_create_form`. No behavioral code changes.
 
 = 2.6.1 =
 * New: Gravity Forms suite — 18 tools covering forms (list, get, create, update, delete, update settings), entries (list, get, update, delete with trash/permanent), notifications (get, create, update, delete), and confirmations (get, create, update, delete). All write tools are off by default; list-forms and get-form are on by default. Uses Gravity Forms' own granular capabilities (`gravityforms_edit_forms`, `gravityforms_create_form`, `gravityforms_view_entries`, etc.). Only registered when Gravity Forms is active (`class_exists('GFAPI')`).

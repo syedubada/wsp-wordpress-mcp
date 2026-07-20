@@ -8,6 +8,17 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.6.2] — 2026-07-20
+
+### Changed — Gravity Forms documentation & version bump
+- Documented the complete **18-tool** Gravity Forms suite across `README.md`, `AGENTS.md`, and `readme.txt` — the v2.6.1 README under-reported the suite as "11 tools" and omitted the notification, confirmation, and form-settings write tools.
+- Corrected the capability name in the docs from `gravityforms_create_forms` (plural, incorrect) to `gravityforms_create_form` (singular — the actual Gravity Forms capability) to match the registered tools.
+- Bumped `Version` header and `WSP_MCP_VERSION` to `2.6.2`.
+
+_No behavioral code changes — the 18 Gravity Forms tools shipped in 2.6.1; this release only corrects and completes the documentation._
+
+---
+
 ## [2.6.1] — 2026-07-20
 
 ### Added — Gravity Forms suite (`includes/abilities/gravityforms.php`, `includes/tools/native-tools.php`, `includes/registry.php`)

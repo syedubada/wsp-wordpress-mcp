@@ -26,6 +26,12 @@ if ( ! function_exists( 'wsp_uae_is_active' ) ) {
     }
 }
 
+if ( ! function_exists( 'wsp_gravity_is_active' ) ) {
+    function wsp_gravity_is_active() {
+        return class_exists( 'GFAPI' ) || class_exists( 'GFCommon' );
+    }
+}
+
 
 function wsp_mcp_ability_registry() {
     $abilities = array(
@@ -199,6 +205,30 @@ function wsp_mcp_ability_registry() {
             'wsp/uae-settings-update'          => array('label'=>'Update Plugin Setting', 'description'=>'Updates plugin setting.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
             'wsp/uae-templates-update'         => array('label'=>'Update Template', 'description'=>'Updates template type/status.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
             'wsp/uae-builder-update-widget'    => array('label'=>'Update Widget Settings', 'description'=>'Updates widget keys.', 'group'=>$u_g, 'access'=>'write', 'default'=>false),
+        );
+    }
+
+    if ( wsp_gravity_is_active() ) {
+        $g_g = 'Gravity Forms';
+        $abilities += array(
+            'wsp/gravity-list-forms'       => array( 'label' => 'List Forms',            'description' => 'Lists all Gravity Forms (ID, title, date, active status, entry count).', 'group' => $g_g, 'access' => 'read',  'default' => true  ),
+            'wsp/gravity-get-form'         => array( 'label' => 'Get Form',              'description' => 'Retrieves full JSON structure of a form (fields, labels, types, choices, rules).', 'group' => $g_g, 'access' => 'read',  'default' => true  ),
+            'wsp/gravity-create-form'      => array( 'label' => 'Create Form',           'description' => 'Creates a new form structure with title and optional fields.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-update-form'      => array( 'label' => 'Update Form',           'description' => 'Updates form properties, fields, or active status.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-delete-form'      => array( 'label' => 'Delete Form',           'description' => 'Deletes or trashes a form.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-list-entries'     => array( 'label' => 'List Entries',          'description' => 'Lists submissions/leads for a specific form (paginated).', 'group' => $g_g, 'access' => 'read',  'default' => false ),
+            'wsp/gravity-get-entry'        => array( 'label' => 'Get Entry',             'description' => 'Retrieves complete submission details by entry ID.', 'group' => $g_g, 'access' => 'read',  'default' => false ),
+            'wsp/gravity-update-entry'     => array( 'label' => 'Update Entry',          'description' => 'Updates field values or status (read/unread/starred) inside an entry.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-delete-entry'     => array( 'label' => 'Delete Entry',          'description' => 'Trashes or permanently deletes an entry.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-get-notifications'=> array( 'label' => 'Get Notifications',     'description' => 'Gets notification settings (emails, feeds) for a form.', 'group' => $g_g, 'access' => 'read',  'default' => false ),
+            'wsp/gravity-get-confirmations'    => array( 'label' => 'Get Confirmations',     'description' => 'Gets confirmation settings (thank-you messages, redirects) for a form.', 'group' => $g_g, 'access' => 'read',  'default' => false ),
+            'wsp/gravity-create-notification'  => array( 'label' => 'Create Notification',   'description' => 'Creates a new email notification (to, subject, message, from, etc.).', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-update-notification'  => array( 'label' => 'Update Notification',   'description' => 'Updates an existing notification (to, subject, message, active status, etc.).', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-delete-notification'  => array( 'label' => 'Delete Notification',   'description' => 'Deletes a notification from a form.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-create-confirmation'  => array( 'label' => 'Create Confirmation',   'description' => 'Creates a confirmation (thank-you message, redirect, or page).', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-update-confirmation'  => array( 'label' => 'Update Confirmation',   'description' => 'Updates an existing confirmation (message, redirect URL, default status, etc.).', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-delete-confirmation'  => array( 'label' => 'Delete Confirmation',   'description' => 'Deletes a confirmation from a form.', 'group' => $g_g, 'access' => 'write', 'default' => false ),
+            'wsp/gravity-update-form-settings' => array( 'label' => 'Update Form Settings',  'description' => 'Updates form-level settings (label placement, restrictions, scheduling, honeypot, etc.).', 'group' => $g_g, 'access' => 'write', 'default' => false ),
         );
     }
 

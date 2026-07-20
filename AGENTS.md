@@ -471,6 +471,36 @@ taxonomies, options pages) require `manage_options`; list/read and value-edit to
 ---
 
 
+#### Gravity Forms (`gravityforms.php`)
+
+Only registered if `wsp_gravity_is_active()` (`class_exists('GFAPI') || class_exists('GFCommon')`).
+**18 tools**, all write operations OFF by default (read tools ON by default). MCP tool names use the `wsp_gravity_*` form; enable keys use `wsp/gravity-*`.
+
+| Ability key | Label | Access | Default | Capability | Inputs |
+|---|---|---|---|---|---|
+| `wsp/gravity-list-forms` | List Forms | read | ON | `gravityforms_edit_forms` | none |
+| `wsp/gravity-get-form` | Get Form | read | ON | `gravityforms_edit_forms` | `id`* (int — form ID) |
+| `wsp/gravity-create-form` | Create Form | write | OFF | `gravityforms_create_form` | `title`*, `description`, `fields[]`, `button_text` |
+| `wsp/gravity-update-form` | Update Form | write | OFF | `gravityforms_edit_forms` | `id`*, `title`, `description`, `is_active`, `fields[]`, `button_text` |
+| `wsp/gravity-delete-form` | Delete Form | write | OFF | `gravityforms_delete_forms` | `id`* (int) |
+| `wsp/gravity-list-entries` | List Entries | read | OFF | `gravityforms_view_entries` | `form_id`*, `per_page`, `page`, `status` |
+| `wsp/gravity-get-entry` | Get Entry | read | OFF | `gravityforms_view_entries` | `id`* (int — entry ID) |
+| `wsp/gravity-update-entry` | Update Entry | write | OFF | `gravityforms_edit_entries` | `id`*, `is_read`, `is_starred`, `status`, `fields` (object) |
+| `wsp/gravity-delete-entry` | Delete Entry | write | OFF | `gravityforms_delete_entries` | `id`*, `permanent` (bool) |
+| `wsp/gravity-get-notifications`| Get Notifications | read | OFF | `gravityforms_edit_forms` | `form_id`* (int) |
+| `wsp/gravity-get-confirmations`| Get Confirmations | read | OFF | `gravityforms_edit_forms` | `form_id`* (int) |
+| `wsp/gravity-create-notification`| Create Notification | write | OFF | `gravityforms_edit_forms` | `form_id`*, `name`, `to`, `to_type`, `subject`, `message`, `from`, `from_name`, `reply_to`, `bcc`, `event` |
+| `wsp/gravity-update-notification`| Update Notification | write | OFF | `gravityforms_edit_forms` | `form_id`*, `notification_id`*, `name`, `to`, `to_type`, `subject`, `message`, `from`, `from_name`, `reply_to`, `bcc`, `event`, `is_active` |
+| `wsp/gravity-delete-notification`| Delete Notification | write | OFF | `gravityforms_edit_forms` | `form_id`*, `notification_id`* |
+| `wsp/gravity-create-confirmation`| Create Confirmation | write | OFF | `gravityforms_edit_forms` | `form_id`*, `name`, `type`, `message`, `url`, `page_id`, `query_string`, `is_default` |
+| `wsp/gravity-update-confirmation`| Update Confirmation | write | OFF | `gravityforms_edit_forms` | `form_id`*, `confirmation_id`*, `name`, `type`, `message`, `url`, `page_id`, `query_string`, `is_default`, `is_active` |
+| `wsp/gravity-delete-confirmation`| Delete Confirmation | write | OFF | `gravityforms_edit_forms` | `form_id`*, `confirmation_id`* |
+| `wsp/gravity-update-form-settings`| Update Form Settings | write | OFF | `gravityforms_edit_forms` | `id`*, `label_placement`, `description_placement`, `sub_label_placement`, `css_class`, `enable_honeypot`, `enable_animation`, `limit_entries`, `limit_entries_count`, `limit_entries_period`, `limit_entries_message`, `schedule_form`, `schedule_start`, `schedule_end`, `schedule_pending_message`, `schedule_message`, `require_login`, `require_login_message`, `save_enabled` |
+
+- `gravityforms_delete_entries` cap check on `delete_entry`; `entry_status` valid values are `active`, `spam`, `trash`.
+- All callbacks gate on `class_exists('GFAPI')` and return `WP_Error` if Gravity Forms is inactive.
+- `get_entry` resolves field labels from the form definition and returns human-readable field data.
+
 #### Ultimate Addons for Elementor (`uae.php`)
 
 Only registered if `wsp_uae_is_active()`. Adds 45 tools to manipulate UAE widgets, templates (Header/Footer/Blocks), settings, and display rules. 

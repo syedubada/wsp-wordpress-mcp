@@ -22,6 +22,7 @@ if ( ! function_exists( 'wsp_rankmath_is_active' ) )  { function wsp_rankmath_is
 if ( ! function_exists( 'wsp_elementor_is_active' ) ) { function wsp_elementor_is_active() { return true; } }
 if ( ! function_exists( 'wsp_acf_is_active' ) )       { function wsp_acf_is_active()       { return true; } }
 if ( ! function_exists( 'wsp_uae_is_active' ) )       { function wsp_uae_is_active()       { return true; } }
+if ( ! function_exists( 'wsp_gravity_is_active' ) )  { function wsp_gravity_is_active()  { return true; } }
 if ( ! class_exists( 'WooCommerce' ) )                { class WooCommerce {} }
 
 require __DIR__ . '/../wsp-mcp-ai-agents-connector/includes/registry.php';

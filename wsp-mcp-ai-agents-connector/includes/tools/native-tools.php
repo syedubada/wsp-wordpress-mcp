@@ -979,6 +979,244 @@ function wsp_mcp_register_native_tools() {
 		}
 	}
 
+	// ---- Gravity Forms (only when Gravity Forms is active) ----
+	if ( function_exists( 'wsp_gravity_is_active' ) && wsp_gravity_is_active() ) {
+		WSP_MCP_Server::register_tool( 'wsp_gravity_list_forms', array(
+			'description' => 'Lists all Gravity Forms (ID, title, date, active status, entry count).',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_gravity_list_forms',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-list-forms',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_get_form', array(
+			'description' => 'Retrieves full JSON structure of a form (fields, labels, types, choices, rules).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_get_form',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-get-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_create_form', array(
+			'description' => 'Creates a new Gravity Form structure with title and optional fields.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'title' ), 'properties' => array(
+				'title'       => array( 'type' => 'string', 'description' => 'Form title.' ),
+				'description' => array( 'type' => 'string', 'description' => 'Form description.' ),
+				'fields'      => array( 'type' => 'array', 'description' => 'Array of field objects per Gravity Forms schema.' ),
+				'button_text' => array( 'type' => 'string', 'description' => 'Submit button text. Default: Submit.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_create_form',
+			'capability'  => 'gravityforms_create_form',
+			'enable_key'  => 'wsp/gravity-create-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_update_form', array(
+			'description' => 'Updates form properties, fields, or active status.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'          => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'title'       => array( 'type' => 'string', 'description' => 'New form title.' ),
+				'description' => array( 'type' => 'string', 'description' => 'New form description.' ),
+				'is_active'   => array( 'type' => 'boolean', 'description' => 'Whether the form is active.' ),
+				'fields'      => array( 'type' => 'array', 'description' => 'Updated fields array per Gravity Forms schema.' ),
+				'button_text' => array( 'type' => 'string', 'description' => 'Submit button text.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_update_form',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-update-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_delete_form', array(
+			'description' => 'Deletes or trashes a Gravity Form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_delete_form',
+			'capability'  => 'gravityforms_delete_forms',
+			'enable_key'  => 'wsp/gravity-delete-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_list_entries', array(
+			'description' => 'Lists submissions/leads for a specific form (paginated).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id' ), 'properties' => array(
+				'form_id'  => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'per_page' => array( 'type' => 'integer', 'description' => 'Number of entries. Default 20.' ),
+				'page'     => array( 'type' => 'integer', 'description' => 'Page number. Default 1.' ),
+				'status'   => array( 'type' => 'string', 'description' => 'active | spam | trash | all.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_list_entries',
+			'capability'  => 'gravityforms_view_entries',
+			'enable_key'  => 'wsp/gravity-list-entries',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_get_entry', array(
+			'description' => 'Retrieves complete submission details by entry ID.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_get_entry',
+			'capability'  => 'gravityforms_view_entries',
+			'enable_key'  => 'wsp/gravity-get-entry',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_update_entry', array(
+			'description' => 'Updates field values or status (read/unread/starred) inside an entry.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'          => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+				'is_read'     => array( 'type' => 'boolean', 'description' => 'Mark entry as read (true) or unread (false).' ),
+				'is_starred'  => array( 'type' => 'boolean', 'description' => 'Star (true) or unstar (false) the entry.' ),
+				'status'      => array( 'type' => 'string', 'description' => 'active | spam | trash.' ),
+				'fields'      => array( 'type' => 'object', 'description' => 'Key-value map of field IDs to new values.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_update_entry',
+			'capability'  => 'gravityforms_edit_entries',
+			'enable_key'  => 'wsp/gravity-update-entry',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_delete_entry', array(
+			'description' => 'Trashes or permanently deletes an entry.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'        => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+				'permanent' => array( 'type' => 'boolean', 'description' => 'True for permanent deletion, false to move to trash. Default false.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_delete_entry',
+			'capability'  => 'gravityforms_delete_entries',
+			'enable_key'  => 'wsp/gravity-delete-entry',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_get_notifications', array(
+			'description' => 'Gets notification settings (emails, feeds) for a form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id' ), 'properties' => array(
+				'form_id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_get_notifications',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-get-notifications',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_get_confirmations', array(
+			'description' => 'Gets confirmation settings (thank-you messages, redirects) for a form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id' ), 'properties' => array(
+				'form_id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_get_confirmations',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-get-confirmations',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_create_notification', array(
+			'description' => 'Creates a new email notification for a form (to, subject, message, from, etc.).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id' ), 'properties' => array(
+				'form_id'   => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'name'      => array( 'type' => 'string', 'description' => 'Notification name.' ),
+				'to'        => array( 'type' => 'string', 'description' => 'Send to email. Default: {admin_email}.' ),
+				'to_type'   => array( 'type' => 'string', 'description' => 'email | field | hidden. Default: email.' ),
+				'subject'   => array( 'type' => 'string', 'description' => 'Email subject. Supports merge tags.' ),
+				'message'   => array( 'type' => 'string', 'description' => 'Email body. Default: {all_fields}.' ),
+				'from'      => array( 'type' => 'string', 'description' => 'From email.' ),
+				'from_name' => array( 'type' => 'string', 'description' => 'From name.' ),
+				'reply_to'  => array( 'type' => 'string', 'description' => 'Reply-to email.' ),
+				'bcc'       => array( 'type' => 'string', 'description' => 'BCC recipients.' ),
+				'event'     => array( 'type' => 'string', 'description' => 'Trigger event. Default: form_submission.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_create_notification',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-create-notification',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_update_notification', array(
+			'description' => 'Updates an existing notification (to, subject, message, active status, etc.).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id', 'notification_id' ), 'properties' => array(
+				'form_id'         => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'notification_id' => array( 'type' => 'string', 'description' => 'Notification ID to update.' ),
+				'name'            => array( 'type' => 'string', 'description' => 'New name.' ),
+				'to'              => array( 'type' => 'string', 'description' => 'Recipient email.' ),
+				'to_type'         => array( 'type' => 'string', 'description' => 'email | field | hidden.' ),
+				'subject'         => array( 'type' => 'string', 'description' => 'Email subject.' ),
+				'message'         => array( 'type' => 'string', 'description' => 'Email body.' ),
+				'from'            => array( 'type' => 'string', 'description' => 'From email.' ),
+				'from_name'       => array( 'type' => 'string', 'description' => 'From name.' ),
+				'reply_to'        => array( 'type' => 'string', 'description' => 'Reply-to email.' ),
+				'bcc'             => array( 'type' => 'string', 'description' => 'BCC recipients.' ),
+				'event'           => array( 'type' => 'string', 'description' => 'Trigger event.' ),
+				'is_active'       => array( 'type' => 'boolean', 'description' => 'Enable/disable notification.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_update_notification',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-update-notification',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_delete_notification', array(
+			'description' => 'Deletes a notification from a form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id', 'notification_id' ), 'properties' => array(
+				'form_id'         => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'notification_id' => array( 'type' => 'string', 'description' => 'Notification ID to delete.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_delete_notification',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-delete-notification',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_create_confirmation', array(
+			'description' => 'Creates a confirmation (thank-you message, redirect, or page) for a form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id' ), 'properties' => array(
+				'form_id'      => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'name'         => array( 'type' => 'string', 'description' => 'Confirmation name.' ),
+				'type'         => array( 'type' => 'string', 'description' => 'message | page | redirect. Default: message.' ),
+				'message'      => array( 'type' => 'string', 'description' => 'Thank-you message (for type=message).' ),
+				'url'          => array( 'type' => 'string', 'description' => 'Redirect URL (for type=redirect).' ),
+				'page_id'      => array( 'type' => 'integer', 'description' => 'WordPress page ID (for type=page).' ),
+				'query_string' => array( 'type' => 'string', 'description' => 'URL query string for redirect.' ),
+				'is_default'   => array( 'type' => 'boolean', 'description' => 'Set as default confirmation.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_create_confirmation',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-create-confirmation',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_update_confirmation', array(
+			'description' => 'Updates an existing confirmation (message, redirect URL, default status, etc.).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id', 'confirmation_id' ), 'properties' => array(
+				'form_id'         => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'confirmation_id' => array( 'type' => 'string', 'description' => 'Confirmation ID to update.' ),
+				'name'            => array( 'type' => 'string', 'description' => 'New name.' ),
+				'type'            => array( 'type' => 'string', 'description' => 'message | page | redirect.' ),
+				'message'         => array( 'type' => 'string', 'description' => 'Thank-you message.' ),
+				'url'             => array( 'type' => 'string', 'description' => 'Redirect URL.' ),
+				'page_id'         => array( 'type' => 'integer', 'description' => 'WP page ID.' ),
+				'query_string'    => array( 'type' => 'string', 'description' => 'Query string.' ),
+				'is_default'      => array( 'type' => 'boolean', 'description' => 'Set as default.' ),
+				'is_active'       => array( 'type' => 'boolean', 'description' => 'Enable/disable confirmation.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_update_confirmation',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-update-confirmation',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_delete_confirmation', array(
+			'description' => 'Deletes a confirmation from a form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'form_id', 'confirmation_id' ), 'properties' => array(
+				'form_id'         => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'confirmation_id' => array( 'type' => 'string', 'description' => 'Confirmation ID to delete.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_delete_confirmation',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-delete-confirmation',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_gravity_update_form_settings', array(
+			'description' => 'Updates form-level settings (label placement, restrictions, scheduling, honeypot, etc.).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'                       => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'label_placement'          => array( 'type' => 'string', 'description' => 'top_label | left_label | right_label.' ),
+				'description_placement'    => array( 'type' => 'string', 'description' => 'above | below.' ),
+				'sub_label_placement'      => array( 'type' => 'string', 'description' => 'above | below | inline.' ),
+				'css_class'                => array( 'type' => 'string', 'description' => 'CSS class name for the form wrapper.' ),
+				'enable_honeypot'          => array( 'type' => 'boolean', 'description' => 'Enable anti-spam honeypot.' ),
+				'enable_animation'         => array( 'type' => 'boolean', 'description' => 'Enable form animation.' ),
+				'limit_entries'            => array( 'type' => 'boolean', 'description' => 'Enable entry limit.' ),
+				'limit_entries_count'      => array( 'type' => 'integer', 'description' => 'Max number of entries.' ),
+				'limit_entries_period'     => array( 'type' => 'string', 'description' => 'day | week | month | year | total.' ),
+				'limit_entries_message'    => array( 'type' => 'string', 'description' => 'Message when limit reached.' ),
+				'schedule_form'            => array( 'type' => 'boolean', 'description' => 'Enable form scheduling.' ),
+				'schedule_start'           => array( 'type' => 'string', 'description' => 'Start date/time (e.g. 2026-01-01 00:00).' ),
+				'schedule_end'             => array( 'type' => 'string', 'description' => 'End date/time.' ),
+				'schedule_pending_message' => array( 'type' => 'string', 'description' => 'Message before schedule starts.' ),
+				'schedule_message'         => array( 'type' => 'string', 'description' => 'Message after schedule ends.' ),
+				'require_login'            => array( 'type' => 'boolean', 'description' => 'Require user to be logged in.' ),
+				'require_login_message'    => array( 'type' => 'string', 'description' => 'Message if not logged in.' ),
+				'save_enabled'             => array( 'type' => 'boolean', 'description' => 'Enable Save & Continue.' ),
+			) ),
+			'callback'    => 'wsp_execute_gravity_update_form_settings',
+			'capability'  => 'gravityforms_edit_forms',
+			'enable_key'  => 'wsp/gravity-update-form-settings',
+		) );
+	}
+
 	/**
 	 * Allow add-ons to register additional native MCP tools.
 	 *

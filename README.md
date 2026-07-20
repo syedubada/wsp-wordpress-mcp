@@ -14,6 +14,10 @@
 
 ---
 
+## ✨ What's New in v2.6.1
+
+- 📬 **Gravity Forms Suite** — 11 new tools for Gravity Forms, with List Forms and Get Form ON by default and all write tools OFF. Toggled from **MCP > Settings** under the "Gravity Forms" group. Covers **forms** (list, get, create, update, delete), **entries** (list, get, update, delete with trash/permanent support), and **settings** (get notifications and confirmations for a form). All callbacks use `GFAPI` and enforce strict Gravity Forms capability checks (`gravityforms_edit_forms`, `gravityforms_create_forms`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`). Only registered when Gravity Forms is active.
+
 ## ✨ What's New in v2.6.0
 
 - 🧱 **Ultimate Addons for Elementor (UAE) Suite** — 45 new tools for UAE, all off by default and toggled from **MCP > Settings** under the "Ultimate Addons Elementor" group. Covers **widgets** (activate, deactivate, bulk toggle, check usage, list), **templates** (create, duplicate, trash, restore, and update Header/Footer/Blocks templates), the **builder/engine** (add sections, add columns, move elements, build layouts from JSON), and **settings** (get/update UAE plugin settings, theme info, extensions, and design-system tokens). String inputs are sanitized with `wp_kses_post()` and every tool enforces a strict capability check (`edit_posts`, `publish_posts`, or `manage_options`). Only registered when UAE is active.
@@ -148,6 +152,17 @@
 | Update UAE Settings / Design Tokens | write |
 
 > 45 tools in total, off by default and only registered when UAE is active. Structural and settings writes require `edit_posts`, `publish_posts`, or `manage_options`; all string inputs are sanitized with `wp_kses_post()`.
+
+### Gravity Forms *(requires Gravity Forms plugin)*
+| Ability | Access |
+|---------|--------|
+| List / Get Forms | read |
+| Create / Update / Delete Form | write |
+| List / Get Entries | read |
+| Update / Delete Entry | write |
+| Get Notifications / Confirmations | read |
+
+> 11 tools in total. List Forms and Get Form are ON by default; all write tools are OFF by default. All callbacks require appropriate Gravity Forms capabilities (`gravityforms_edit_forms`, `gravityforms_create_forms`, `gravityforms_delete_forms`, `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`).
 
 ---
 

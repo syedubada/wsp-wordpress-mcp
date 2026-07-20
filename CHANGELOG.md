@@ -8,6 +8,24 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.6.1] — 2026-07-20
+
+### Added — Gravity Forms suite (`includes/abilities/gravityforms.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- **18 new tools** for the Gravity Forms integration, all write tools OFF by default and toggled from **MCP > Settings** under the "Gravity Forms" group (icon: 📋). Only registered when Gravity Forms is active (`class_exists('GFAPI') || class_exists('GFCommon')`):
+  - **Forms:** list (ON by default), get (ON by default), create, update, delete, update-form-settings. Capabilities: `gravityforms_edit_forms`, `gravityforms_create_form`, `gravityforms_delete_forms`.
+  - **Entries:** list, get, update (status, read/starred flags, field values), delete (trash or permanent). Capabilities: `gravityforms_view_entries`, `gravityforms_edit_entries`, `gravityforms_delete_entries`.
+  - **Notifications:** create, update, delete (in addition to the existing get). Capability: `gravityforms_edit_forms`.
+  - **Confirmations:** create, update, delete (in addition to the existing get). Capability: `gravityforms_edit_forms`.
+  - **Settings:** `update-form-settings` handles label placement, restrictions, scheduling, honeypot, CSS class, save & continue, and require-login per form. Capability: `gravityforms_edit_forms`.
+- New helper `wsp_gravity_is_active()` defined in both `registry.php` (defensive forward-declaration) and `gravityforms.php`; used consistently across registry, tool registration, and execution guards.
+- `get_entry` resolves field labels from the form definition so responses include human-readable names alongside raw field IDs.
+- All callbacks gate on `class_exists('GFAPI')` and return `WP_Error` on inactive plugin; inputs sanitized with `sanitize_text_field`/`intval`/`sanitize_textarea_field`/`wp_kses_post`.
+
+### Security
+- Strict Gravity Forms capability checks on every tool; entry status validated against `active`, `spam`, `trash` enum.
+
+---
+
 ## [2.6.0] — 2026-07-20
 
 ### Added — Ultimate Addons for Elementor (UAE) suite (`includes/abilities/uae.php`, `includes/tools/native-tools.php`, `includes/registry.php`)

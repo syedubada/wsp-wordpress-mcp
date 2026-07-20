@@ -41,6 +41,7 @@ require_once WSP_MCP_DIR . 'includes/abilities/elementor.php';
 require_once WSP_MCP_DIR . 'includes/abilities/woocommerce.php';
 require_once WSP_MCP_DIR . 'includes/abilities/acf.php'; // Included ACF Pro Abilities
 require_once WSP_MCP_DIR . 'includes/abilities/uae.php'; // Included UAE Abilities
+require_once WSP_MCP_DIR . 'includes/abilities/gravityforms.php'; // Included Gravity Forms Abilities
 
 add_action( 'admin_menu',                       'wsp_mcp_add_menu' );
 add_action( 'admin_init',                       'wsp_mcp_register_settings' );

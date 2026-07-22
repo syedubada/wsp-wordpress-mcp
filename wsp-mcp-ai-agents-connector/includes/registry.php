@@ -32,6 +32,17 @@ if ( ! function_exists( 'wsp_gravity_is_active' ) ) {
     }
 }
 
+if ( ! function_exists( 'wsp_cf7_is_active' ) ) {
+    function wsp_cf7_is_active() {
+        return class_exists( 'WPCF7_ContactForm' );
+    }
+}
+
+if ( ! function_exists( 'wsp_wpforms_is_active' ) ) {
+    function wsp_wpforms_is_active() {
+        return function_exists( 'wpforms' ) || class_exists( 'WPForms' );
+    }
+}
 
 function wsp_mcp_ability_registry() {
     $abilities = array(
@@ -121,6 +132,17 @@ function wsp_mcp_ability_registry() {
             'wsp/elementor-add-widget'     => array( 'label' => 'Add Widget',            'description' => 'Add a widget to a container or column on an Elementor page.',              'group' => 'Elementor', 'access' => 'write', 'default' => false ),
             'wsp/elementor-add-container'  => array( 'label' => 'Add Container',         'description' => 'Add a layout container or section to an Elementor page.',                  'group' => 'Elementor', 'access' => 'write', 'default' => false ),
             'wsp/elementor-remove-element' => array( 'label' => 'Remove Element',        'description' => 'Remove a widget or container from an Elementor page by element ID.',       'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-get-active-kit'     => array( 'label' => 'Get Active Kit',       'description' => 'Retrieve global fonts, color palette, and layout from the active Elementor kit.', 'group' => 'Elementor', 'access' => 'read',  'default' => false ),
+            'wsp/elementor-update-active-kit'  => array( 'label' => 'Update Active Kit',    'description' => 'Update colors and layout settings in the active Elementor kit.',            'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-regenerate-css'     => array( 'label' => 'Regenerate CSS',       'description' => 'Clear and regenerate all Elementor CSS cache files.',                      'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-get-widget-schema'  => array( 'label' => 'Get Widget Schema',    'description' => 'Get control schema for a widget type — margins, padding, background, typography, etc.', 'group' => 'Elementor', 'access' => 'read',  'default' => false ),
+            'wsp/elementor-duplicate-element'  => array( 'label' => 'Duplicate Element',    'description' => 'Clone a widget or container with new unique IDs recursively.',              'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-move-element'       => array( 'label' => 'Move Element',         'description' => 'Reposition an element to a different parent or index position.',           'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-convert-css'        => array( 'label' => 'Convert CSS to Elementor', 'description' => 'Parse CSS rules into Elementor-compatible settings structure.',            'group' => 'Elementor', 'access' => 'read',  'default' => false ),
+            'wsp/elementor-get-page-settings'  => array( 'label' => 'Get Page Settings',    'description' => 'Read global page config like template, background, and custom CSS.',       'group' => 'Elementor', 'access' => 'read',  'default' => false ),
+            'wsp/elementor-update-page-settings'=> array( 'label' => 'Update Page Settings', 'description' => 'Update page template (canvas/full-width) and page-level settings.',        'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-copy-styles'        => array( 'label' => 'Copy Element Styles',   'description' => 'Copy style settings from a source element to a destination element.',     'group' => 'Elementor', 'access' => 'write', 'default' => false ),
+            'wsp/elementor-get-breakpoints'    => array( 'label' => 'Get Breakpoints',      'description' => 'Read responsive breakpoint values from Elementor configuration.',          'group' => 'Elementor', 'access' => 'read',  'default' => false ),
         );
     }
 
@@ -232,6 +254,39 @@ function wsp_mcp_ability_registry() {
         );
     }
 
+    if ( wsp_cf7_is_active() ) {
+        $cf7_g = 'Contact Form 7';
+        $abilities += array(
+            'wsp/cf7-list-forms'       => array( 'label' => 'List CF7 Forms',           'description' => 'Lists all Contact Form 7 forms with ID, title, and shortcode.',                         'group' => $cf7_g, 'access' => 'read',  'default' => true  ),
+            'wsp/cf7-get-form'         => array( 'label' => 'Get CF7 Form',             'description' => 'Retrieves full CF7 form structure (markup, mail config, messages, tags).',             'group' => $cf7_g, 'access' => 'read',  'default' => true  ),
+            'wsp/cf7-create-form'      => array( 'label' => 'Create CF7 Form',          'description' => 'Creates a new Contact Form 7 form with title and optional markup/properties.',          'group' => $cf7_g, 'access' => 'write', 'default' => false ),
+            'wsp/cf7-update-form'      => array( 'label' => 'Update CF7 Form',          'description' => 'Updates an existing CF7 form markup, mail settings, or messages.',                      'group' => $cf7_g, 'access' => 'write', 'default' => false ),
+            'wsp/cf7-delete-form'      => array( 'label' => 'Delete CF7 Form',          'description' => 'Trashes or permanently deletes a Contact Form 7 form.',                                 'group' => $cf7_g, 'access' => 'write', 'default' => false ),
+            'wsp/cf7-list-entries'     => array( 'label' => 'List CF7 Entries',         'description' => 'Lists Flamingo-stored form submissions (requires Flamingo plugin).',                    'group' => $cf7_g, 'access' => 'read',  'default' => false ),
+            'wsp/cf7-get-entry'        => array( 'label' => 'Get CF7 Entry',            'description' => 'Retrieves full details of a single Flamingo submission by ID.',                         'group' => $cf7_g, 'access' => 'read',  'default' => false ),
+            'wsp/cf7-validate-form'    => array( 'label' => 'Validate CF7 Form',        'description' => 'Runs the built-in configuration validator to check for email/syntax errors.',          'group' => $cf7_g, 'access' => 'read',  'default' => false ),
+            'wsp/cf7-get-integrations' => array( 'label' => 'Get CF7 Integrations',     'description' => 'Lists active integration modules and reCAPTCHA configuration status.',                  'group' => $cf7_g, 'access' => 'read',  'default' => false ),
+            'wsp/cf7-moderate-entry'   => array( 'label' => 'Moderate CF7 Entry',       'description' => 'Mark a Flamingo submission as spam, unspam, trash, or untrash.',                        'group' => $cf7_g, 'access' => 'write', 'default' => false ),
+        );
+    }
+
+    if ( wsp_wpforms_is_active() ) {
+        $wpf_g = 'WPForms';
+        $abilities += array(
+            'wsp/wpforms-list-forms'         => array( 'label' => 'List WPForms',           'description' => 'Lists all WPForms with ID, title, date, status, and field count.',              'group' => $wpf_g, 'access' => 'read',  'default' => true  ),
+            'wsp/wpforms-get-form'           => array( 'label' => 'Get Form',               'description' => 'Retrieves full WPForms structure (fields, settings, payments config).',     'group' => $wpf_g, 'access' => 'read',  'default' => true  ),
+            'wsp/wpforms-describe-schema'    => array( 'label' => 'Describe Schema',        'description' => 'Returns supported field types and editable attributes to guide AI.',            'group' => $wpf_g, 'access' => 'read',  'default' => true  ),
+            'wsp/wpforms-get-form-stats'     => array( 'label' => 'Get Form Stats',         'description' => 'Fetch entry counts and analytics for forms (Pro entry stats).',                'group' => $wpf_g, 'access' => 'read',  'default' => true  ),
+            'wsp/wpforms-create-form'        => array( 'label' => 'Create Form',            'description' => 'Creates a new WPForms form with fields, settings, and notifications.',        'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+            'wsp/wpforms-update-form-settings'=> array( 'label' => 'Update Form Settings',   'description' => 'Update form settings (title, description, submit text, AJAX, anti-spam).',    'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+            'wsp/wpforms-add-field'          => array( 'label' => 'Add Field',              'description' => 'Add a new field to an existing form with auto-assigned ID.',                  'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+            'wsp/wpforms-update-field'       => array( 'label' => 'Update Field',           'description' => 'Update a field\'s label, description, required status, or choices.',          'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+            'wsp/wpforms-delete-form'        => array( 'label' => 'Delete Form',            'description' => 'Trashes or permanently deletes a WPForms form.',                              'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+            'wsp/wpforms-list-entries'       => array( 'label' => 'List Entries',           'description' => 'Lists submission entries for a form (requires WPForms Pro).',                 'group' => $wpf_g, 'access' => 'read',  'default' => false ),
+            'wsp/wpforms-get-entry'          => array( 'label' => 'Get Entry',              'description' => 'Retrieves full details and field values of a single entry.',                  'group' => $wpf_g, 'access' => 'read',  'default' => false ),
+            'wsp/wpforms-delete-entry'       => array( 'label' => 'Delete Entry',           'description' => 'Trashes or permanently deletes a submission entry (Pro).',                    'group' => $wpf_g, 'access' => 'write', 'default' => false ),
+        );
+    }
     return $abilities;
 }
 

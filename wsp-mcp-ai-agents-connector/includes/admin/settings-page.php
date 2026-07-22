@@ -188,6 +188,8 @@ function wsp_mcp_settings_page() {
         'WooCommerce'            => '🛍️',
         'Advanced Custom Fields'    => '🧩',
         'Gravity Forms'             => '📋',
+        'Contact Form 7'           => '📬',
+        'WPForms'                  => '📊',
     );
     $total   = count( $settings );
     $enabled = count( array_filter( $settings ) );

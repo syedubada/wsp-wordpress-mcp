@@ -749,7 +749,6 @@ function wsp_mcp_register_native_tools() {
 			'enable_key'  => 'wsp/elementor-get-breakpoints',
 		) );
 	}
-	}
 
 	// ---- Advanced Custom Fields (only when ACF is active) ----
 	if ( function_exists( 'wsp_acf_is_active' ) && wsp_acf_is_active() ) {

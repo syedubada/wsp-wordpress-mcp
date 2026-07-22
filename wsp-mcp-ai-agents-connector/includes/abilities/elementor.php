@@ -1020,4 +1020,3 @@ function wsp_execute_elementor_get_breakpoints( $input ) {
         'description' => 'Use these breakpoints when setting responsive properties. Elementor supports _tablet and _mobile suffixes on settings keys for responsive overrides.',
     );
 }
->>>>>>> d108e8e (v2.6.5: CF7 + WPForms + Elementor Advanced Design Tools + all integrations)

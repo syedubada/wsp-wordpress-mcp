@@ -42,16 +42,35 @@ function wsp_abilities_core_groups() {
 	return array( 'Posts', 'Pages', 'Taxonomy', 'Comments', 'Media', 'Users', 'Search', 'Site' );
 }
 
-/** @return array<string,string> Plugin group => "requires the X plugin", in display order. */
+/**
+ * Plugin group => "requires the X plugin", in registry order.
+ *
+ * Derived from the registry itself: every group that is not a core group is a
+ * plugin section. This must never be hand-maintained — a plugin group present
+ * in the registry but absent here breaks the website (GROUPS[a.group] is
+ * undefined) and silently drops the group from abilities.md.
+ *
+ * @return array<string,string>
+ */
 function wsp_abilities_plugin_sections() {
-	return array(
-		'Yoast SEO'              => 'requires the Yoast SEO plugin',
-		'Rank Math SEO'          => 'requires the Rank Math SEO plugin',
-		'WooCommerce'            => 'requires the WooCommerce plugin',
-		'Elementor'              => 'requires the Elementor plugin',
+	// Groups whose "requires" wording differs from their display name.
+	$overrides = array(
 		'Ultimate Addons Elementor' => 'requires the Ultimate Addons for Elementor plugin',
-		'Advanced Custom Fields' => 'requires the ACF plugin',
+		'Advanced Custom Fields'    => 'requires the ACF plugin',
 	);
+
+	$core_groups = wsp_abilities_core_groups();
+	$sections    = array();
+	foreach ( wsp_abilities_all() as $a ) {
+		$group = $a['group'];
+		if ( in_array( $group, $core_groups, true ) || isset( $sections[ $group ] ) ) {
+			continue;
+		}
+		$sections[ $group ] = isset( $overrides[ $group ] )
+			? $overrides[ $group ]
+			: sprintf( 'requires the %s plugin', $group );
+	}
+	return $sections;
 }
 
 /** @return array{total:int,core:int,read:int,write:int} */

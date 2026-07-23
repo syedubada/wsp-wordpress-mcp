@@ -8,6 +8,63 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.6.5] — 2026-07-21
+
+### Added — Elementor Advanced Design Tools (`includes/abilities/elementor.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- **11 new Elementor design tools** for visual mockup replication and high-fidelity design workflows. All OFF by default, toggled from **MCP > Settings** under the "Elementor" group:
+  - `get-active-kit` — reads global fonts, color palette, container width, and layout from the active Elementor kit.
+  - `update-active-kit` — updates system colors, container width, and spacing in the active kit.
+  - `regenerate-css` — clears and regenerates Elementor CSS cache for all Elementor-built posts.
+  - `get-widget-schema` — queries the Elementor controls manager for a widget type; returns all control keys (margins, padding, background, typography, border) organized by tab.
+  - `duplicate-element` — clones a widget or container with recursive 8-char hex ID reassignment via `wsp_elementor_clone_and_reid()` to prevent collisions.
+  - `move-element` — removes an element from its current position and inserts it into a new parent or index position.
+  - `convert-css` — parses CSS key-value rules (`padding`, `margin`, `border-radius`, `background-color`, `font-size`, `text-align`, etc.) into their exact Elementor settings counterparts.
+  - `get-page-settings` / `update-page-settings` — read and update page-level `_elementor_page_settings` meta (template, hide_title, content_width, background).
+  - `copy-styles` — copies settings from a source element ID to a destination element ID (with optional merge mode).
+  - `get-breakpoints` — reads responsive viewport breakpoints (desktop 1025+, tablet 768-1024, mobile 0-767) from the active kit.
+
+### Security
+- All write tools run settings through `wsp_elementor_sanitize_settings()` (blocks `custom_css`, `_attributes`, `custom_attributes`, `__dynamic__` keys).
+- `update-active-kit` and `regenerate-css` require `manage_options`; all other tools require `edit_posts`.
+
+---
+
+## [2.6.4] — 2026-07-21
+
+### Added — WPForms suite (`includes/abilities/wpforms.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- **12 new tools** for the WPForms integration (Lite and Pro), all write tools OFF by default and toggled from **MCP > Settings** under the "WPForms" group. Only registered when WPForms is active (`function_exists('wpforms') || class_exists('WPForms')`):
+  - **Forms:** list (ON), get (ON), describe-schema (ON), get-form-stats (ON), create, update-form-settings, add-field, update-field, delete (trash or permanent). Capabilities: `wpforms_view_forms`, `wpforms_edit_forms`.
+  - **Entries (Pro only):** list, get, delete (trash or permanent) — require `wsp_wpforms_pro_is_active()` (`wpforms()->is_pro()`). Lite users receive a descriptive error. Capabilities: `wpforms_view_entries`, `wpforms_edit_entries`.
+- New helpers: `wsp_wpforms_is_active()`, `wsp_wpforms_pro_is_active()`, `wsp_wpforms_get_form_data()`, `wsp_wpforms_save_form_data()`, `wsp_wpforms_get_next_field_id()`, `wsp_wpforms_field_types()`.
+- **Form data model:** WPForms stores forms as the `wpforms` custom post type; `post_content` is a JSON object with `fields` (array keyed by string IDs), `settings`, and `payments`. Field IDs are auto-assigned incrementally starting from 0.
+- **Schema description:** `describe-schema` returns 16 supported field types (text, email, select, radio, checkbox, number, phone, file-upload, etc.) with metadata on choice support and editable attributes.
+- `create-form` auto-generates a default notification targeting `{admin_email}` with `{all_fields}` body.
+- All callbacks gate on `function_exists('wpforms')` and return descriptive `WP_Error` on inactive plugin.
+
+### Security
+- All text strings sanitized with `sanitize_text_field`/`sanitize_textarea_field`/`wp_kses_post`; field choices array members sanitized individually; JSON encoding uses `wp_json_encode()` + `wp_slash()`.
+- Form delete gates on `wpforms_edit_forms`; entry tools require `wpforms_view_entries` / `wpforms_edit_entries`.
+
+---
+
+## [2.6.3] — 2026-07-21
+
+### Added — Contact Form 7 suite (`includes/abilities/cf7.php`, `includes/tools/native-tools.php`, `includes/registry.php`)
+- **10 new tools** for the Contact Form 7 integration, all write tools OFF by default and toggled from **MCP > Settings** under the "Contact Form 7" group. Only registered when CF7 is active (`class_exists('WPCF7_ContactForm')`):
+  - **Forms:** list (ON by default), get (ON by default), create, update, delete (trash or permanent). Capabilities: `wpcf7_edit_contact_forms`, `wpcf7_delete_contact_forms`.
+  - **Entries (Flamingo):** list, get — require `class_exists('Flamingo_Inbound_Message')` as CF7 does not store entries natively. Capability: `wpcf7_edit_contact_forms`.
+  - **Validation:** `validate-form` runs the built-in `WPCF7_ConfigValidator` on a form ID to catch email template and syntax errors. Capability: `wpcf7_edit_contact_forms`.
+  - **Integrations:** `get-integrations` reads active integration modules and reCAPTCHA key status from the global `wpcf7` option. Capability: `manage_options`.
+  - **Moderation (Flamingo):** `moderate-entry` marks a submission as spam, unspam, trash, or untrash. Capability: `wpcf7_edit_contact_forms`.
+- New helper `wsp_cf7_is_active()` defined in both `registry.php` (defensive forward-declaration) and `cf7.php`; `wsp_cf7_flamingo_is_active()` also in `cf7.php`.
+- `get-form` returns full form structure including scanned form tags, mail config, messages, and additional settings.
+- All callbacks gate on `class_exists('WPCF7_ContactForm')` and return descriptive `WP_Error` on inactive plugin; Flamingo-dependent tools return a clear error when Flamingo is missing.
+
+### Security
+- All form strings sanitized with `sanitize_text_field`/`wp_kses_post`/`sanitize_textarea_field`; form IDs and entry IDs cast to `int`; `moderate_entry` action validated against `spam | unspam | trash | untrash` enum.
+- `get-integrations` requires `manage_options` (exposes reCAPTCHA key status); all entry tools require `wpcf7_edit_contact_forms`.
+
+---
 ## [2.6.2] — 2026-07-20
 
 ### Changed — Gravity Forms documentation & version bump

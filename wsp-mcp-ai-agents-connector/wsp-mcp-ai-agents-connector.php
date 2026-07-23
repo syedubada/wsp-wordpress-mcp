@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WSP MCP - AI Agents Connector
  * Description: Exposes WordPress content to Claude AI and other AI Agents via a built-in MCP server (no companion plugin required). Manage all abilities from Settings > MCP.
- * Version: 2.6.2
+ * Version: 2.6.5
  * Requires at least: 6.9
  * Requires PHP: 7.4
  * Author: WebSensePro
@@ -14,7 +14,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'WSP_MCP_VERSION', '2.6.2' );
+define( 'WSP_MCP_VERSION', '2.6.5' );
 define( 'WSP_MCP_OPTION', 'wsp_mcp_abilities' );
 define( 'WSP_MCP_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -42,6 +42,8 @@ require_once WSP_MCP_DIR . 'includes/abilities/woocommerce.php';
 require_once WSP_MCP_DIR . 'includes/abilities/acf.php'; // Included ACF Pro Abilities
 require_once WSP_MCP_DIR . 'includes/abilities/uae.php'; // Included UAE Abilities
 require_once WSP_MCP_DIR . 'includes/abilities/gravityforms.php'; // Included Gravity Forms Abilities
+require_once WSP_MCP_DIR . 'includes/abilities/cf7.php'; // Included Contact Form 7 Abilities
+require_once WSP_MCP_DIR . 'includes/abilities/wpforms.php'; // Included WPForms Abilities
 
 add_action( 'admin_menu',                       'wsp_mcp_add_menu' );
 add_action( 'admin_init',                       'wsp_mcp_register_settings' );

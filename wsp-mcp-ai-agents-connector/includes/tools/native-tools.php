@@ -637,6 +637,117 @@ function wsp_mcp_register_native_tools() {
 			'capability'  => 'edit_posts',
 			'enable_key'  => 'wsp/elementor-remove-element',
 		) );
+
+		// -- Advanced Design Tools (v2.6.5) --
+		WSP_MCP_Server::register_tool( 'wsp_elementor_get_active_kit', array(
+			'description' => 'Retrieve global fonts, color palette, and layout from the active Elementor kit.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_elementor_get_active_kit',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-get-active-kit',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_update_active_kit', array(
+			'description' => 'Update colors and layout settings in the active Elementor kit.',
+			'inputSchema' => array( 'type' => 'object', 'properties' => array(
+				'system_colors'           => array( 'type' => 'array', 'items' => array( 'type' => 'object' ), 'description' => 'Array of {title, color, _id} color objects.' ),
+				'container_width'         => array( 'type' => 'object', 'description' => 'Container width setting object.' ),
+				'space_between_widgets'   => array( 'type' => 'string', 'description' => 'Space between widgets value.' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_update_active_kit',
+			'capability'  => 'manage_options',
+			'enable_key'  => 'wsp/elementor-update-active-kit',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_regenerate_css', array(
+			'description' => 'Clear and regenerate all Elementor CSS cache files.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_elementor_regenerate_css',
+			'capability'  => 'manage_options',
+			'enable_key'  => 'wsp/elementor-regenerate-css',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_get_widget_schema', array(
+			'description' => 'Get control schema for a widget type — margins, padding, background, typography, etc.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'widget_type' ), 'properties' => array(
+				'widget_type' => array( 'type' => 'string', 'description' => 'Elementor widget slug (e.g. heading, button, image, text-editor).' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_get_widget_schema',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-get-widget-schema',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_duplicate_element', array(
+			'description' => 'Clone a widget or container with new unique IDs recursively.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'post_id', 'element_id' ), 'properties' => array(
+				'post_id'    => array( 'type' => 'integer' ),
+				'element_id' => array( 'type' => 'string' ),
+				'parent_id'  => array( 'type' => 'string', 'description' => 'Optional parent to place the clone into.' ),
+				'position'   => array( 'type' => 'integer', 'description' => 'Optional insertion position.' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_duplicate_element',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-duplicate-element',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_move_element', array(
+			'description' => 'Reposition an element to a different parent or index position.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'post_id', 'element_id' ), 'properties' => array(
+				'post_id'       => array( 'type' => 'integer' ),
+				'element_id'    => array( 'type' => 'string' ),
+				'new_parent_id' => array( 'type' => 'string', 'description' => 'Target parent element ID (null = root).' ),
+				'position'      => array( 'type' => 'integer', 'description' => 'Target index position.' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_move_element',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-move-element',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_convert_css', array(
+			'description' => 'Parse CSS rules into Elementor-compatible settings structure.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'css' ), 'properties' => array(
+				'css' => array( 'type' => 'object', 'description' => 'CSS key-value map (e.g. {"padding": "20px 10px", "background-color": "#ff0000"}).' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_convert_css',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-convert-css',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_get_page_settings', array(
+			'description' => 'Read global page config like template, background, and custom CSS.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'post_id' ), 'properties' => array(
+				'post_id' => array( 'type' => 'integer' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_get_page_settings',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-get-page-settings',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_update_page_settings', array(
+			'description' => 'Update page template (canvas/full-width) and page-level settings.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'post_id' ), 'properties' => array(
+				'post_id'          => array( 'type' => 'integer' ),
+				'page_template'    => array( 'type' => 'string', 'description' => 'elementor_canvas | elementor_header_footer | default.' ),
+				'hide_title'       => array( 'type' => 'boolean', 'description' => 'Hide page title.' ),
+				'content_width'    => array( 'type' => 'object', 'description' => 'Content width {unit, size}.' ),
+				'background_color' => array( 'type' => 'string', 'description' => 'Page background color.' ),
+				'settings'         => array( 'type' => 'object', 'description' => 'Additional page settings to merge.' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_update_page_settings',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-update-page-settings',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_copy_styles', array(
+			'description' => 'Copy style settings from a source element to a destination element.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'post_id', 'source_id', 'destination_id' ), 'properties' => array(
+				'post_id'        => array( 'type' => 'integer' ),
+				'source_id'      => array( 'type' => 'string', 'description' => 'Element ID to copy styles from.' ),
+				'destination_id' => array( 'type' => 'string', 'description' => 'Element ID to apply styles to.' ),
+				'merge'          => array( 'type' => 'boolean', 'description' => 'Merge with existing settings (true) or overwrite (false). Default: false.' ),
+			) ),
+			'callback'    => 'wsp_execute_elementor_copy_styles',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-copy-styles',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_elementor_get_breakpoints', array(
+			'description' => 'Read responsive breakpoint values from Elementor configuration.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_elementor_get_breakpoints',
+			'capability'  => 'edit_posts',
+			'enable_key'  => 'wsp/elementor-get-breakpoints',
+		) );
 	}
 
 	// ---- Advanced Custom Fields (only when ACF is active) ----
@@ -1214,6 +1325,248 @@ function wsp_mcp_register_native_tools() {
 			'callback'    => 'wsp_execute_gravity_update_form_settings',
 			'capability'  => 'gravityforms_edit_forms',
 			'enable_key'  => 'wsp/gravity-update-form-settings',
+		) );
+	}
+
+	// ---- Contact Form 7 (only when CF7 is active) ----
+	if ( function_exists( 'wsp_cf7_is_active' ) && wsp_cf7_is_active() ) {
+		WSP_MCP_Server::register_tool( 'wsp_cf7_list_forms', array(
+			'description' => 'Lists all Contact Form 7 forms with ID, title, and shortcode.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_cf7_list_forms',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-list-forms',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_get_form', array(
+			'description' => 'Retrieves full CF7 form structure (markup, mail config, messages, tags).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_get_form',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-get-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_create_form', array(
+			'description' => 'Creates a new Contact Form 7 form with title and optional markup/properties.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'title' ), 'properties' => array(
+				'title'       => array( 'type' => 'string', 'description' => 'Form title.' ),
+				'locale'      => array( 'type' => 'string', 'description' => 'Locale code (e.g. en_US).' ),
+				'form_markup' => array( 'type' => 'string', 'description' => 'Custom form markup HTML.' ),
+				'mail'        => array( 'type' => 'object', 'description' => 'Mail settings key-value pairs.' ),
+				'messages'    => array( 'type' => 'object', 'description' => 'Custom messages key-value pairs.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_create_form',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-create-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_update_form', array(
+			'description' => 'Updates an existing CF7 form markup, mail settings, or messages.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'                   => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'title'                => array( 'type' => 'string', 'description' => 'New form title.' ),
+				'locale'               => array( 'type' => 'string', 'description' => 'Locale code.' ),
+				'form_markup'          => array( 'type' => 'string', 'description' => 'Updated form markup.' ),
+				'mail'                 => array( 'type' => 'object', 'description' => 'Updated mail settings.' ),
+				'mail_2'               => array( 'type' => 'object', 'description' => 'Updated mail (2) settings.' ),
+				'messages'             => array( 'type' => 'object', 'description' => 'Updated messages.' ),
+				'additional_settings'  => array( 'type' => 'string', 'description' => 'Additional settings text.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_update_form',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-update-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_delete_form', array(
+			'description' => 'Trashes or permanently deletes a Contact Form 7 form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'        => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'permanent' => array( 'type' => 'boolean', 'description' => 'True for permanent delete, false to move to trash. Default false.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_delete_form',
+			'capability'  => 'wpcf7_delete_contact_forms',
+			'enable_key'  => 'wsp/cf7-delete-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_list_entries', array(
+			'description' => 'Lists Flamingo-stored form submissions (requires Flamingo plugin).',
+			'inputSchema' => array( 'type' => 'object', 'properties' => array(
+				'form_id'  => array( 'type' => 'integer', 'description' => 'Form ID to filter by.' ),
+				'per_page' => array( 'type' => 'integer', 'description' => 'Number of entries. Default 20.' ),
+				'page'     => array( 'type' => 'integer', 'description' => 'Page number. Default 1.' ),
+				'status'   => array( 'type' => 'string', 'description' => 'publish | spam | trash | all.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_list_entries',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-list-entries',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_get_entry', array(
+			'description' => 'Retrieves full details of a single Flamingo submission by ID.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_get_entry',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-get-entry',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_validate_form', array(
+			'description' => 'Runs the built-in configuration validator to check for email/syntax errors.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_validate_form',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-validate-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_get_integrations', array(
+			'description' => 'Lists active integration modules and reCAPTCHA configuration status.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_cf7_get_integrations',
+			'capability'  => 'manage_options',
+			'enable_key'  => 'wsp/cf7-get-integrations',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_cf7_moderate_entry', array(
+			'description' => 'Mark a Flamingo submission as spam, unspam, trash, or untrash.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id', 'action' ), 'properties' => array(
+				'id'     => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+				'action' => array( 'type' => 'string', 'description' => 'spam | unspam | trash | untrash.' ),
+			) ),
+			'callback'    => 'wsp_execute_cf7_moderate_entry',
+			'capability'  => 'wpcf7_edit_contact_forms',
+			'enable_key'  => 'wsp/cf7-moderate-entry',
+		) );
+	}
+
+	// ---- WPForms (only when WPForms is active) ----
+	if ( function_exists( 'wsp_wpforms_is_active' ) && wsp_wpforms_is_active() ) {
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_list_forms', array(
+			'description' => 'Lists all WPForms with ID, title, date, status, and field count.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_wpforms_list_forms',
+			'capability'  => 'wpforms_view_forms',
+			'enable_key'  => 'wsp/wpforms-list-forms',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_get_form', array(
+			'description' => 'Retrieves full WPForms structure (fields, settings, payments).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_get_form',
+			'capability'  => 'wpforms_view_forms',
+			'enable_key'  => 'wsp/wpforms-get-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_describe_schema', array(
+			'description' => 'Returns supported field types and editable attributes to guide AI on create/update field actions.',
+			'inputSchema' => $obj,
+			'callback'    => 'wsp_execute_wpforms_describe_schema',
+			'capability'  => 'wpforms_view_forms',
+			'enable_key'  => 'wsp/wpforms-describe-schema',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_get_form_stats', array(
+			'description' => 'Fetch entry counts and analytics (Pro entry stats).',
+			'inputSchema' => array( 'type' => 'object', 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Form ID (optional; omit for global stats).' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_get_form_stats',
+			'capability'  => 'wpforms_view_forms',
+			'enable_key'  => 'wsp/wpforms-get-form-stats',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_create_form', array(
+			'description' => 'Creates a new WPForms form with fields, settings, and notification email.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'title' ), 'properties' => array(
+				'title'       => array( 'type' => 'string', 'description' => 'Form title.' ),
+				'description' => array( 'type' => 'string', 'description' => 'Form description.' ),
+				'fields'      => array( 'type' => 'array', 'items' => array( 'type' => 'object' ), 'description' => 'Array of field objects.' ),
+				'submit_text' => array( 'type' => 'string', 'description' => 'Submit button text. Default: Submit.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_create_form',
+			'capability'  => 'wpforms_edit_forms',
+			'enable_key'  => 'wsp/wpforms-create-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_update_form_settings', array(
+			'description' => 'Update form settings (title, description, submit text, AJAX, anti-spam).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'                     => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'title'                  => array( 'type' => 'string', 'description' => 'Form title.' ),
+				'description'            => array( 'type' => 'string', 'description' => 'Form description.' ),
+				'submit_text'            => array( 'type' => 'string', 'description' => 'Submit button text.' ),
+				'submit_text_processing' => array( 'type' => 'string', 'description' => 'Text shown while submitting.' ),
+				'antispam'               => array( 'type' => 'boolean', 'description' => 'Enable anti-spam honeypot.' ),
+				'ajax_submit'            => array( 'type' => 'boolean', 'description' => 'Enable AJAX submission.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_update_form_settings',
+			'capability'  => 'wpforms_edit_forms',
+			'enable_key'  => 'wsp/wpforms-update-form-settings',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_add_field', array(
+			'description' => 'Add a new field to an existing form with auto-assigned ID.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id', 'type', 'label' ), 'properties' => array(
+				'id'          => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'type'        => array( 'type' => 'string', 'description' => 'Field type (use wpforms-describe-schema to see options).' ),
+				'label'       => array( 'type' => 'string', 'description' => 'Field label.' ),
+				'required'    => array( 'type' => 'boolean', 'description' => 'Make field required.' ),
+				'description' => array( 'type' => 'string', 'description' => 'Field description text.' ),
+				'placeholder' => array( 'type' => 'string', 'description' => 'Placeholder text.' ),
+				'css'         => array( 'type' => 'string', 'description' => 'CSS class.' ),
+				'choices'     => array( 'type' => 'array', 'items' => array( 'type' => 'object' ), 'description' => 'Array of {label, value} for choice fields.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_add_field',
+			'capability'  => 'wpforms_edit_forms',
+			'enable_key'  => 'wsp/wpforms-add-field',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_update_field', array(
+			'description' => 'Update a field label, description, required status, or choices.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id', 'field_id' ), 'properties' => array(
+				'id'          => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'field_id'    => array( 'type' => 'string', 'description' => 'Field ID (e.g. "0", "1").' ),
+				'label'       => array( 'type' => 'string', 'description' => 'Field label.' ),
+				'required'    => array( 'type' => 'boolean', 'description' => 'Make field required.' ),
+				'description' => array( 'type' => 'string', 'description' => 'Field description.' ),
+				'placeholder' => array( 'type' => 'string', 'description' => 'Placeholder text.' ),
+				'css'         => array( 'type' => 'string', 'description' => 'CSS class.' ),
+				'choices'     => array( 'type' => 'array', 'items' => array( 'type' => 'object' ), 'description' => 'Array of {label, value} for choice fields.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_update_field',
+			'capability'  => 'wpforms_edit_forms',
+			'enable_key'  => 'wsp/wpforms-update-field',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_delete_form', array(
+			'description' => 'Trashes or permanently deletes a WPForms form.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'        => array( 'type' => 'integer', 'description' => 'Form ID.' ),
+				'permanent' => array( 'type' => 'boolean', 'description' => 'True for permanent deletion. Default false.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_delete_form',
+			'capability'  => 'wpforms_edit_forms',
+			'enable_key'  => 'wsp/wpforms-delete-form',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_list_entries', array(
+			'description' => 'Lists submission entries for a form (requires WPForms Pro).',
+			'inputSchema' => array( 'type' => 'object', 'properties' => array(
+				'id'       => array( 'type' => 'integer', 'description' => 'Form ID to filter by.' ),
+				'per_page' => array( 'type' => 'integer', 'description' => 'Number of entries. Default 20.' ),
+				'page'     => array( 'type' => 'integer', 'description' => 'Page number. Default 1.' ),
+				'status'   => array( 'type' => 'string', 'description' => 'publish | trash | all.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_list_entries',
+			'capability'  => 'wpforms_view_entries',
+			'enable_key'  => 'wsp/wpforms-list-entries',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_get_entry', array(
+			'description' => 'Retrieves full details and field values of a single entry.',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id' => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_get_entry',
+			'capability'  => 'wpforms_view_entries',
+			'enable_key'  => 'wsp/wpforms-get-entry',
+		) );
+		WSP_MCP_Server::register_tool( 'wsp_wpforms_delete_entry', array(
+			'description' => 'Trashes or permanently deletes a submission entry (Pro).',
+			'inputSchema' => array( 'type' => 'object', 'required' => array( 'id' ), 'properties' => array(
+				'id'        => array( 'type' => 'integer', 'description' => 'Entry ID.' ),
+				'permanent' => array( 'type' => 'boolean', 'description' => 'True for permanent deletion. Default false.' ),
+			) ),
+			'callback'    => 'wsp_execute_wpforms_delete_entry',
+			'capability'  => 'wpforms_edit_entries',
+			'enable_key'  => 'wsp/wpforms-delete-entry',
 		) );
 	}
 

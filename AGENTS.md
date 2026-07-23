@@ -31,7 +31,7 @@ These three files give you complete project understanding without touching the c
 ## What this plugin is
 
 **Plugin Name:** WSP MCP - AI Agents Connector  
-**Version:** 2.6.2  
+**Version:** 2.6.5
 **Slug/prefix:** `wsp`  
 **WP option key:** `wsp_mcp_abilities`  
 **Constant prefix:** `WSP_MCP_`
@@ -187,7 +187,7 @@ wsp-wordpress-mcp/                        ← repo root (NOT the plugin — dev 
 
 | Constant | Value |
 |---|---|
-| `WSP_MCP_VERSION` | `'2.6.2'` |
+| `WSP_MCP_VERSION` | `'2.6.5'` |
 | `WSP_MCP_OPTION` | `'wsp_mcp_abilities'` (per-ability on/off toggles) |
 | `WSP_MCP_DIR` | `plugin_dir_path(__FILE__)` |
 
@@ -363,8 +363,20 @@ Only registered if `class_exists('\Elementor\Plugin')`. All abilities require `e
 | `wsp/elementor-add-widget` | Add Widget | write | OFF | `post_id`*, `widget_type`*, `container_id`, `settings`, `position` |
 | `wsp/elementor-add-container` | Add Container | write | OFF | `post_id`*, `type` (container\|section), `parent_id`, `settings`, `position` |
 | `wsp/elementor-remove-element` | Remove Element | write | OFF | `post_id`*, `element_id`* |
+| `wsp/elementor-get-active-kit` | Get Active Kit | read | OFF | none |
+| `wsp/elementor-update-active-kit` | Update Active Kit | write | OFF | `system_colors[]`, `container_width`, `space_between_widgets` |
+| `wsp/elementor-regenerate-css` | Regenerate CSS | write | OFF | none |
+| `wsp/elementor-get-widget-schema` | Get Widget Schema | read | OFF | `widget_type`* |
+| `wsp/elementor-duplicate-element` | Duplicate Element | write | OFF | `post_id`*, `element_id`*, `parent_id`, `position` |
+| `wsp/elementor-move-element` | Move Element | write | OFF | `post_id`*, `element_id`*, `new_parent_id`, `position` |
+| `wsp/elementor-convert-css` | Convert CSS | read | OFF | `css`* (object) |
+| `wsp/elementor-get-page-settings` | Get Page Settings | read | OFF | `post_id`* |
+| `wsp/elementor-update-page-settings` | Update Page Settings | write | OFF | `post_id`*, `page_template`, `hide_title`, `content_width`, `background_color` |
+| `wsp/elementor-copy-styles` | Copy Styles | write | OFF | `post_id`*, `source_id`*, `destination_id`*, `merge` |
+| `wsp/elementor-get-breakpoints` | Get Breakpoints | read | OFF | none |
 
 **Elementor data model:**
+**Elementor Advanced Design Tools (v2.6.5):** added `get-active-kit`, `update-active-kit`, `regenerate-css`, `get-widget-schema`, `duplicate-element`, `move-element`, `convert-css`, `get-page-settings`, `update-page-settings`, `copy-styles`, `get-breakpoints`. `convert-css` parses CSS shorthand into Elementor settings format. `duplicate-element` / `clone-and-reid` recursively assigns new 8-char hex IDs. All write tools run through `wsp_elementor_sanitize_settings()`.
 - Elementor page data is stored in `_elementor_data` post meta as a JSON-encoded recursive element tree.
 - Each element: `{ id (8-char hex), elType, widgetType?, settings{}, elements[], isInner? }`
 - Root elements are sections (legacy) or containers (modern). Widgets cannot be placed directly inside a section — they need a column inside the section.
@@ -501,6 +513,55 @@ Only registered if `wsp_gravity_is_active()` (`class_exists('GFAPI') || class_ex
 - All callbacks gate on `class_exists('GFAPI')` and return `WP_Error` if Gravity Forms is inactive.
 - `get_entry` resolves field labels from the form definition and returns human-readable field data.
 
+#### Contact Form 7 (`cf7.php`)
+
+Only registered if `wsp_cf7_is_active()` (`class_exists('WPCF7_ContactForm')`).
+**10 tools** covering forms, Flamingo entries, validation, integrations, and moderation. MCP tool names use the `wsp_cf7_*` form; enable keys use `wsp/cf7-*`.
+
+| Ability key | Label | Access | Default | Capability | Inputs |
+|---|---|---|---|---|---|---|
+| `wsp/cf7-list-forms` | List CF7 Forms | read | ON | `wpcf7_edit_contact_forms` | none |
+| `wsp/cf7-get-form` | Get CF7 Form | read | ON | `wpcf7_edit_contact_forms` | `id`* (int — form ID) |
+| `wsp/cf7-create-form` | Create CF7 Form | write | OFF | `wpcf7_edit_contact_forms` | `title`*, `locale`, `form_markup`, `mail` (object), `messages` (object) |
+| `wsp/cf7-update-form` | Update CF7 Form | write | OFF | `wpcf7_edit_contact_forms` | `id`*, `title`, `locale`, `form_markup`, `mail`, `mail_2`, `messages`, `additional_settings` |
+| `wsp/cf7-delete-form` | Delete CF7 Form | write | OFF | `wpcf7_delete_contact_forms` | `id`*, `permanent` (bool) |
+| `wsp/cf7-list-entries` | List CF7 Entries | read | OFF | `wpcf7_edit_contact_forms` | `form_id`, `per_page`, `page`, `status` |
+| `wsp/cf7-get-entry` | Get CF7 Entry | read | OFF | `wpcf7_edit_contact_forms` | `id`* (int — entry ID) |
+| `wsp/cf7-validate-form` | Validate CF7 Form | read | OFF | `wpcf7_edit_contact_forms` | `id`* (int) |
+| `wsp/cf7-get-integrations` | Get CF7 Integrations | read | OFF | `manage_options` | none |
+| `wsp/cf7-moderate-entry` | Moderate CF7 Entry | write | OFF | `wpcf7_edit_contact_forms` | `id`*, `action`* (spam | unspam | trash | untrash) |
+
+- **Flamingo dependency:** `list-entries`, `get-entry`, and `moderate-entry` require `class_exists('Flamingo_Inbound_Message')` — Contact Form 7 does not store entries natively. These tools return a descriptive `WP_Error` if Flamingo is not active.
+- `validate-form` uses the built-in `WPCF7_ConfigValidator` to check email templates and form syntax.
+- `get-integrations` reads active integration modules via `WPCF7_Integration::list_modules()` and reCAPTCHA keys from the global `wpcf7` option.
+- All callbacks gate on `class_exists('WPCF7_ContactForm')` and return `WP_Error` if CF7 is inactive.
+- All CF7 tools use `wpcf7_edit_contact_forms` (except `delete-form`, which uses `wpcf7_delete_contact_forms`, and `get-integrations`, which uses `manage_options`).
+
+#### WPForms (`wpforms.php`)
+
+Only registered if `wsp_wpforms_is_active()` (`function_exists('wpforms') || class_exists('WPForms')`).
+**12 tools** covering forms, fields, entries (Pro), and schema description. MCP tool names use the `wsp_wpforms_*` form; enable keys use `wsp/wpforms-*`.
+
+| Ability key | Label | Access | Default | Capability | Inputs |
+|---|---|---|---|---|---|---|
+| `wsp/wpforms-list-forms` | List WPForms | read | ON | `wpforms_view_forms` | none |
+| `wsp/wpforms-get-form` | Get Form | read | ON | `wpforms_view_forms` | `id`* (int — form ID) |
+| `wsp/wpforms-describe-schema` | Describe Schema | read | ON | `wpforms_view_forms` | none |
+| `wsp/wpforms-get-form-stats` | Get Form Stats | read | ON | `wpforms_view_forms` | `id` (int, optional) |
+| `wsp/wpforms-create-form` | Create Form | write | OFF | `wpforms_edit_forms` | `title`*, `description`, `fields[]`, `submit_text` |
+| `wsp/wpforms-update-form-settings` | Update Form Settings | write | OFF | `wpforms_edit_forms` | `id`*, `title`, `description`, `submit_text`, `antispam`, `ajax_submit` |
+| `wsp/wpforms-add-field` | Add Field | write | OFF | `wpforms_edit_forms` | `id`*, `type`*, `label`*, `required`, `description`, `placeholder`, `css`, `choices[]` |
+| `wsp/wpforms-update-field` | Update Field | write | OFF | `wpforms_edit_forms` | `id`*, `field_id`*, `label`, `required`, `description`, `placeholder`, `css`, `choices[]` |
+| `wsp/wpforms-delete-form` | Delete Form | write | OFF | `wpforms_edit_forms` | `id`*, `permanent` (bool) |
+| `wsp/wpforms-list-entries` | List Entries | read | OFF | `wpforms_view_entries` | `id`, `per_page`, `page`, `status` |
+| `wsp/wpforms-get-entry` | Get Entry | read | OFF | `wpforms_view_entries` | `id`* (int — entry ID) |
+| `wsp/wpforms-delete-entry` | Delete Entry | write | OFF | `wpforms_edit_entries` | `id`*, `permanent` (bool) |
+
+- **Pro dependency:** `list-entries`, `get-entry`, and `delete-entry` require WPForms Pro (`wsp_wpforms_pro_is_active()` checks `wpforms()->is_pro()`). Lite users receive a descriptive error.
+- **Form data model:** Forms are stored as the `wpforms` custom post type with `post_content` as a JSON object containing `fields` (array, keyed by string ID), `settings`, and `payments`.
+- **Field IDs:** Auto-assigned as incremental integers starting from 0. `wsp_wpforms_get_next_field_id()` finds the highest existing ID + 1.
+- **Schema description:** `describe-schema` returns 16 supported field types with metadata on which accept choices and which attributes are editable.
+- All callbacks gate on `function_exists('wpforms')` and return `WP_Error` if WPForms is inactive.
 #### Ultimate Addons for Elementor (`uae.php`)
 
 Only registered if `wsp_uae_is_active()`. Adds 45 tools to manipulate UAE widgets, templates (Header/Footer/Blocks), settings, and display rules. 

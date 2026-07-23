@@ -2,7 +2,7 @@
 
 > **By [WebSensePro](https://websensepro.com) — Official Shopify Partner & WordPress Agency**
 
-[![Version](https://img.shields.io/badge/Version-2.6.0-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
+[![Version](https://img.shields.io/badge/Version-2.6.5-blue?style=for-the-badge)](https://github.com/bilalnaseer/wsp-wordpress-mcp/releases)
 [![YouTube](https://img.shields.io/badge/YouTube-140K%2B%20Subscribers-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/websensepro)
 [![License](https://img.shields.io/badge/License-GPL%202.0-green?style=for-the-badge)](LICENSE)
 
@@ -13,6 +13,18 @@
 [![WSP WordPress MCP — Full Tutorial](https://img.youtube.com/vi/1hGSUAdRxiU/maxresdefault.jpg)](https://youtu.be/1hGSUAdRxiU)
 
 ---
+
+## ✨ What's New in v2.6.5
+
+- 🎨 **Elementor Advanced Design Tools (11 tools)** — new tools for high-fidelity design work, all OFF by default and toggled from **MCP > Settings** under the "Elementor" group. Read the active kit's global colors, fonts, and layout (`get-active-kit`) and update them (`update-active-kit`); regenerate the Elementor CSS cache (`regenerate-css`); fetch a widget's full control schema — margins, padding, typography, borders (`get-widget-schema`); duplicate an element with fresh unique IDs (`duplicate-element`) or move it to a new spot (`move-element`); turn plain CSS into Elementor settings (`convert-css`); read/update page-level settings like template and background (`get-page-settings` / `update-page-settings`); copy one element's styles onto another (`copy-styles`); and read the responsive breakpoints (`get-breakpoints`). Every write tool runs through the same `wsp_elementor_sanitize_settings()` guard as the rest of the Elementor suite, so no code can be injected. `update-active-kit` and `regenerate-css` require `manage_options`; the rest require `edit_posts`.
+
+## ✨ What's New in v2.6.4
+
+- 📊 **WPForms Suite (12 tools)** — full support for WPForms (Lite and Pro), toggled from **MCP > Settings** under the "WPForms" group. **List Forms**, **Get Form**, **Describe Schema**, and **Get Form Stats** are ON by default; all write tools are OFF. Covers **forms** (list, get, describe-schema, get-form-stats, create, update settings, add field, update field, delete) and **entries** (list, get, delete — WPForms Pro only). Uses WPForms' own capabilities (`wpforms_view_forms`, `wpforms_edit_forms`, `wpforms_view_entries`, `wpforms_edit_entries`); all strings are sanitized before saving. Only registered when WPForms is active.
+
+## ✨ What's New in v2.6.3
+
+- 📬 **Contact Form 7 Suite (10 tools)** — full support for Contact Form 7, toggled from **MCP > Settings** under the "Contact Form 7" group. **List Forms** and **Get Form** are ON by default; all write tools are OFF. Covers **forms** (list, get, create, update, delete), **entries** via Flamingo (list, get), **validation** (`validate-form` catches email/syntax errors), **integrations** (active modules + reCAPTCHA status), and **moderation** (spam/unspam/trash/untrash a submission). Entry tools require the Flamingo plugin, since CF7 doesn't store entries on its own. Uses CF7's capabilities (`wpcf7_edit_contact_forms`, `wpcf7_delete_contact_forms`); `get-integrations` requires `manage_options`. Only registered when Contact Form 7 is active.
 
 ## ✨ What's New in v2.6.2
 
